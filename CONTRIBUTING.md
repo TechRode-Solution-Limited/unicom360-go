@@ -57,15 +57,19 @@ conformance suite only when the whole `testdata/` directory is absent (as in the
 violation Prism reports:
 
 ```sh
-docker run -d --rm --name prism -p 4010:4010 \
+docker run -d --rm --name prism -p 4013:4010 \
   -v "$PWD/../unicom360-openapi:/spec:ro" \
-  stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false /spec/openapi.yaml
-UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4010 go test -tags contract -run Contract -count=1 ./...
+  stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false --errors /spec/openapi.yaml
+UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4013 go test -tags contract -run Contract -count=1 ./...
 ```
 
-When Go runs in a container too, share Prism's network namespace so `127.0.0.1` reaches it
-(`docker run --network container:prism ... golang:1.22 go test -tags contract ...`). Plain
-http to a loopback address is allowed by the client, so the test needs no special case.
+`--multiprocess=false` is required (Prism 5's multi-process mode crashes in its image) and
+`--errors` makes Prism answer any request or mock response that breaks the spec with an error.
+`UNICOM360_CONTRACT_BASE_URL` picks the address (default `http://127.0.0.1:4013`). When Go
+runs in a container too, share Prism's network namespace so `127.0.0.1` reaches it, and use
+Prism's own port: `docker run --network container:prism -e
+UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4010 ... golang:1.22 go test -tags contract ...`.
+Plain http to a loopback address is allowed by the client, so the test needs no special case.
 
 ## Releasing
 

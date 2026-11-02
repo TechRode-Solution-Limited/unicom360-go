@@ -81,12 +81,14 @@ jobs:
           go-version: stable
 
       - name: Start Prism
+        # --multiprocess=false: Prism 5's multi-process mode crashes in its image.
+        # --errors: strict validation of every request and mock response.
         run: |
-          docker run -d --name prism -p 4010:4010 \
+          docker run -d --name prism -p 4013:4010 \
             -v "$GITHUB_WORKSPACE/unicom360-openapi:/spec:ro" \
-            stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false /spec/openapi.yaml
+            stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false --errors /spec/openapi.yaml
           for _ in $(seq 1 60); do
-            if curl -sf -o /dev/null http://127.0.0.1:4010/health; then exit 0; fi
+            if curl -sf -o /dev/null http://127.0.0.1:4013/health; then exit 0; fi
             sleep 1
           done
           docker logs prism
@@ -94,7 +96,7 @@ jobs:
 
       - name: Contract test
         env:
-          UNICOM360_CONTRACT_BASE_URL: http://127.0.0.1:4010
+          UNICOM360_CONTRACT_BASE_URL: http://127.0.0.1:4013
         run: go test -tags contract -run Contract -count=1 -v ./...
 
       - name: Prism log

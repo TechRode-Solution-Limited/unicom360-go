@@ -8,13 +8,19 @@ package unicom360_test
 //
 // Run Prism, then the test (see CONTRIBUTING.md):
 //
-//	docker run -d --name prism -p 4010:4010 -v "$PWD/../unicom360-openapi:/spec:ro" \
-//	  stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false /spec/openapi.yaml
-//	UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4010 go test -tags contract -run Contract ./...
+//	docker run -d --name prism -p 4013:4010 -v "$PWD/../unicom360-openapi:/spec:ro" \
+//	  stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false --errors /spec/openapi.yaml
+//	UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4013 go test -tags contract -run Contract ./...
+//
+// --multiprocess=false: Prism 5's default multi-process mode crashes in its image.
+// --errors: a request or response that breaks the spec gets an error answer, not just the
+// sl-violations header; the test fails on either.
 //
 // The base URL is plain http on a loopback address, which the client allows. When the test
 // runs in a container, share Prism's network namespace (docker run --network container:prism)
-// so 127.0.0.1 reaches it; no test-only exception to the base URL rules is needed.
+// and set UNICOM360_CONTRACT_BASE_URL=http://127.0.0.1:4010 (Prism's own port); no test-only
+// exception to the base URL rules is needed. Without the variable the test uses
+// http://127.0.0.1:4013.
 
 import (
 	"context"
@@ -33,7 +39,7 @@ func contractBaseURL() string {
 	if u := os.Getenv("UNICOM360_CONTRACT_BASE_URL"); u != "" {
 		return u
 	}
-	return "http://127.0.0.1:4010"
+	return "http://127.0.0.1:4013"
 }
 
 // violationRecorder passes requests to the network and keeps every sl-violations header.
