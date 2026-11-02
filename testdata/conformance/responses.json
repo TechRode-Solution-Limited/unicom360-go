@@ -1,0 +1,1934 @@
+{
+  "version": "0.1.0",
+  "description": "Canned HTTP responses and the result or error each must produce. See conformance/README.md.",
+  "vectors": [
+    {
+      "id": "sms-accepted-docs-example",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "dff31690-b450-4000-a6b7-141d8523ef10",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971234567"
+            },
+            {
+              "message_id": "dff31690-b450-4001-a6b7-141d8523ef10",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260961234567"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0,
+            1
+          ],
+          "invalid": [],
+          "by_number": {
+            "260961234567": 1,
+            "+260 97 123 4567": 0,
+            "260979999999": null
+          }
+        }
+      }
+    },
+    {
+      "id": "sms-twelve-recipients-shuffled",
+      "description": "Past ten recipients the results are not in request order (the request listed 2609710001NN for NN = 01..12, with 12345 at index 5). Results keep the response's order; helpers find them by number.",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000000\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000101\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000001\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000102\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000010\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000111\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000011\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000112\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000002\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000103\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000003\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000104\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000004\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000105\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000005\",\"status\":\"Invalid mobile number\",\"mobile_number\":\"12345\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000006\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000107\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000007\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000108\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000008\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000109\"},{\"message_id\":\"9b2f6c1e-0d4a-4c7b-8e21-5a3f00000009\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971000110\"}],\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000000",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000101"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000001",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000102"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000010",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000111"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000011",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000112"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000002",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000103"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000003",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000104"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000004",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000105"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000005",
+              "status": "Invalid mobile number",
+              "mobile_number": "12345"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000006",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000107"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000007",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000108"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000008",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000109"
+            },
+            {
+              "message_id": "9b2f6c1e-0d4a-4c7b-8e21-5a3f00000009",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971000110"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            10,
+            11
+          ],
+          "invalid": [
+            7
+          ],
+          "by_number": {
+            "12345": 7,
+            "260971000111": 2,
+            "260971000112": 3,
+            "+260 971 000 101": 0,
+            "260971000106": null
+          }
+        }
+      }
+    },
+    {
+      "id": "sms-invalid-number-is-not-an-error",
+      "description": "Partial success is a result, not an error.",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"Invalid mobile number\",\"mobile_number\":\"0771234567\"}],\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "dff31690-b450-4000-a6b7-141d8523ef10",
+              "status": "ACKNOWLEDGED",
+              "mobile_number": "260971234567"
+            },
+            {
+              "message_id": "dff31690-b450-4001-a6b7-141d8523ef10",
+              "status": "Invalid mobile number",
+              "mobile_number": "0771234567"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0
+          ],
+          "invalid": [
+            1
+          ],
+          "by_number": {
+            "0771234567": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "sms-insufficient-bundle-docs-example",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"INSUFFICIENT_BUNDLE\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "InsufficientBundleError",
+          "code": "INSUFFICIENT_BUNDLE",
+          "message": "INSUFFICIENT_BUNDLE",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-insufficient-international-bundle",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"INSUFFICIENT_BUNDLE: no international SMS bundle\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "InsufficientBundleError",
+          "code": "INSUFFICIENT_BUNDLE",
+          "message": "INSUFFICIENT_BUNDLE: no international SMS bundle",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-invalid-sender",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Invalid From Sender ID\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "INVALID_SENDER_ID",
+          "message": "Invalid From Sender ID",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-sender-not-allowed",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"From Sender ID not allowed\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "SENDER_ID_NOT_ALLOWED",
+          "message": "From Sender ID not allowed",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-recipient-limit",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Recipient list size is invalid\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "INVALID_RECIPIENT_LIMIT",
+          "message": "Recipient list size is invalid",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-duplicate-reference",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"duplicate user reference id\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "DuplicateReferenceError",
+          "code": "DUPLICATE_REFERENCE",
+          "message": "duplicate user reference id",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-invalid-parameters",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Invalid parameters provided\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "INVALID_PARAMETERS",
+          "message": "Invalid parameters provided",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-400-message-array",
+      "description": "The gateway's validator sends message as an array of sentences; the SDK joins them with \"; \".",
+      "operation": "sms.send",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":[\"Missing required keys: [\\\"message\\\"]\"],\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "Missing required keys: [\"message\"]",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-400-message-array-two-entries",
+      "operation": "sms.send",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":[\"Expected STRING, got INTEGER 260971234567, at to -> index 0\",\"Expected STRING, got INTEGER 7, at message\"],\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "Expected STRING, got INTEGER 260971234567, at to -> index 0; Expected STRING, got INTEGER 7, at message",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-400-docs-example",
+      "description": "The docs example shows message as a string; both shapes must work.",
+      "operation": "sms.send",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Missing required keys: [\\\"message\\\"]\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "Missing required keys: [\"message\"]",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "sms-401-docs-example",
+      "operation": "sms.send",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"AUTHENTICATION_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "AUTHENTICATION_FAILED",
+          "message": "AUTHENTICATION_FAILED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "email-accepted-docs-example",
+      "operation": "email.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"48213\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"},{\"message_id\":\"48214\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"john@example.com\"}],\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "48213",
+              "status": "ACKNOWLEDGED",
+              "email_address": "jane@example.com"
+            },
+            {
+              "message_id": "48214",
+              "status": "ACKNOWLEDGED",
+              "email_address": "john@example.com"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0,
+            1
+          ],
+          "invalid": [],
+          "by_address": {
+            "john@example.com": 1,
+            "  JANE@Example.com ": 0,
+            "nobody@example.com": null
+          }
+        }
+      }
+    },
+    {
+      "id": "email-integer-message-id-normalised",
+      "description": "message_id is always a string in SDK models, even when a JSON number arrives.",
+      "operation": "email.send",
+      "off_spec": true,
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":48213,\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"}],\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "48213",
+              "status": "ACKNOWLEDGED",
+              "email_address": "jane@example.com"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0
+          ],
+          "invalid": [],
+          "by_address": {
+            "jane@example.com": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "email-insufficient-bundle-docs-example",
+      "operation": "email.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Insufficient bundle\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "InsufficientBundleError",
+          "code": "INSUFFICIENT_BUNDLE",
+          "message": "Insufficient bundle",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "email-invalid-sender",
+      "operation": "email.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Invalid Sender\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "INVALID_SENDER_ID",
+          "message": "Invalid Sender",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "email-sender-not-allowed",
+      "operation": "email.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Sender not allowed\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "SENDER_ID_NOT_ALLOWED",
+          "message": "Sender not allowed",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "email-recipient-limit",
+      "operation": "email.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Invalid Recipient Limit\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "INVALID_RECIPIENT_LIMIT",
+          "message": "Invalid Recipient Limit",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "email-400-docs-example",
+      "operation": "email.send",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Missing required keys: [\\\"email_body\\\"]\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "Missing required keys: [\"email_body\"]",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-accepted-docs-example",
+      "description": "One accepted, one rejected: success, not an error. The API's data.accepted and data.rejected counts keep those names in canonical form.",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":\"12\",\"user_reference_id\":\"inv-43\"}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "accepted": 1,
+          "rejected": 1,
+          "results": [
+            {
+              "category": "UTILITY",
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+              "reason": null,
+              "status": "ACKNOWLEDGED",
+              "to": "260971234567",
+              "user_reference_id": "inv-42"
+            },
+            {
+              "category": "UTILITY",
+              "message_id": null,
+              "reason": "INVALID_NUMBER",
+              "status": "REJECTED",
+              "to": "12",
+              "user_reference_id": "inv-43"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0
+          ],
+          "rejected": [
+            1
+          ],
+          "by_number": {
+            "12": 1,
+            "260971234567": 0,
+            "260961234567": null
+          }
+        }
+      }
+    },
+    {
+      "id": "template-no-valid-recipients-docs-example",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"NO_VALID_RECIPIENTS\",\"success\":false,\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":0,\"rejected\":2,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":\"DUPLICATE_MSG_REF\",\"status\":\"REJECTED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"BODY_PARAMETERS_INVALID\",\"status\":\"REJECTED\",\"to\":\"260961234567\",\"user_reference_id\":\"inv-44\"}]}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "NoValidRecipientsError",
+          "code": "NO_VALID_RECIPIENTS",
+          "message": "NO_VALID_RECIPIENTS",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": true
+        }
+      }
+    },
+    {
+      "id": "template-not-approved-docs-example",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"TEMPLATE_NOT_APPROVED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "TEMPLATE_NOT_APPROVED",
+          "message": "TEMPLATE_NOT_APPROVED",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-insufficient-bundle-limit",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"INSUFFICIENT_BUNDLE_LIMIT\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "InsufficientBundleError",
+          "code": "INSUFFICIENT_BUNDLE",
+          "message": "INSUFFICIENT_BUNDLE_LIMIT",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-send-failed",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"SEND_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "SEND_FAILED",
+          "message": "SEND_FAILED",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-sender-required",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"SENDER_REQUIRED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "SENDER_REQUIRED",
+          "message": "SENDER_REQUIRED",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-rejected-raw-integer-values",
+      "description": "A rejected recipient echoes to and user_reference_id as the request sent them, which may be numbers; models hold them as strings.",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":12,\"user_reference_id\":43}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "accepted": 1,
+          "rejected": 1,
+          "results": [
+            {
+              "category": "UTILITY",
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+              "reason": null,
+              "status": "ACKNOWLEDGED",
+              "to": "260971234567",
+              "user_reference_id": "inv-42"
+            },
+            {
+              "category": "UTILITY",
+              "message_id": null,
+              "reason": "INVALID_NUMBER",
+              "status": "REJECTED",
+              "to": "12",
+              "user_reference_id": "43"
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [
+            0
+          ],
+          "rejected": [
+            1
+          ],
+          "by_number": {
+            "12": 1
+          }
+        }
+      }
+    },
+    {
+      "id": "template-400-docs-example",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"recipients must hold between 1 and 1000 entries\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "recipients must hold between 1 and 1000 entries",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "template-401-docs-example",
+      "operation": "whatsapp.send_template",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"AUTHENTICATION_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "AUTHENTICATION_FAILED",
+          "message": "AUTHENTICATION_FAILED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "session-accepted-docs-example",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"category\":\"SERVICE\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"s-1\"},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "category": "SERVICE",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "status": "ACKNOWLEDGED",
+          "to": "260971234567",
+          "user_reference_id": "s-1"
+        }
+      }
+    },
+    {
+      "id": "session-window-closed-docs-example",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"SESSION_WINDOW_CLOSED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "SessionWindowClosedError",
+          "code": "SESSION_WINDOW_CLOSED",
+          "message": "SESSION_WINDOW_CLOSED",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "session-duplicate-reference-docs-example",
+      "description": "DuplicateReferenceError whose data.message_id names the original message.",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"DUPLICATE_MSG_REF\",\"success\":false,\"api_reference\":\"1764184470578998353\",\"data\":{\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\"}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "DuplicateReferenceError",
+          "code": "DUPLICATE_REFERENCE",
+          "message": "DUPLICATE_MSG_REF",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": true
+        }
+      }
+    },
+    {
+      "id": "session-duplicate-reference-null-original",
+      "description": "In a rare race the original id is null; data is then not present (null counts as absent).",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"DUPLICATE_MSG_REF\",\"success\":false,\"api_reference\":\"1764184470578998353\",\"data\":{\"message_id\":null}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "DuplicateReferenceError",
+          "code": "DUPLICATE_REFERENCE",
+          "message": "DUPLICATE_MSG_REF",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": true
+        }
+      }
+    },
+    {
+      "id": "session-reply-to-not-found",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"REPLY_TO_NOT_FOUND\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "REPLY_TO_NOT_FOUND",
+          "message": "REPLY_TO_NOT_FOUND",
+          "api_reference": "1764184470578998353",
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "session-400-docs-example",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"text must hold 1 to 4096 characters\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "text must hold 1 to 4096 characters",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "status-docs-example",
+      "operation": "whatsapp.status",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"results\":[{\"billable\":true,\"category\":\"UTILITY\",\"delivered_at\":\"2026-10-24T08:16:02Z\",\"error\":null,\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"read_at\":\"2026-10-24T08:20:45Z\",\"refunded\":false,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"READ\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"billable\":true,\"category\":\"MARKETING\",\"delivered_at\":null,\"error\":{\"code\":131026,\"message\":\"Message undeliverable\"},\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60\",\"read_at\":null,\"refunded\":true,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"FAILED\",\"to\":\"260961234567\",\"user_reference_id\":null},{\"message_id\":\"00000000-0000-4000-8000-000000000000\",\"status\":\"NOT_FOUND\"}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "billable": true,
+              "category": "UTILITY",
+              "delivered_at": "2026-10-24T08:16:02Z",
+              "error": null,
+              "from": "260960123456",
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+              "read_at": "2026-10-24T08:20:45Z",
+              "refunded": false,
+              "sent_at": "2026-10-24T08:15:31Z",
+              "status": "READ",
+              "to": "260971234567",
+              "user_reference_id": "inv-42"
+            },
+            {
+              "billable": true,
+              "category": "MARKETING",
+              "delivered_at": null,
+              "error": {
+                "code": 131026,
+                "message": "Message undeliverable"
+              },
+              "from": "260960123456",
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60",
+              "read_at": null,
+              "refunded": true,
+              "sent_at": "2026-10-24T08:15:31Z",
+              "status": "FAILED",
+              "to": "260961234567",
+              "user_reference_id": null
+            },
+            {
+              "message_id": "00000000-0000-4000-8000-000000000000",
+              "status": "NOT_FOUND"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "status-repeated-id-answered-once",
+      "description": "The request was [id1, id1, id2]: the server de-duplicates, so two results come back. The SDK passes them through.",
+      "operation": "whatsapp.status",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"results\":[{\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"ACCEPTED\",\"user_reference_id\":null,\"to\":\"260971234567\",\"from\":\"260960123456\",\"sent_at\":null,\"delivered_at\":null,\"read_at\":null,\"error\":null,\"category\":\"SERVICE\",\"billable\":false,\"refunded\":false},{\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60\",\"status\":\"NOT_FOUND\"}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+              "status": "ACCEPTED",
+              "user_reference_id": null,
+              "to": "260971234567",
+              "from": "260960123456",
+              "sent_at": null,
+              "delivered_at": null,
+              "read_at": null,
+              "error": null,
+              "category": "SERVICE",
+              "billable": false,
+              "refunded": false
+            },
+            {
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60",
+              "status": "NOT_FOUND"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "status-rejected-with-null-error-code",
+      "operation": "whatsapp.status",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"results\":[{\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"REJECTED\",\"user_reference_id\":\"inv-9\",\"to\":\"260971234567\",\"from\":\"260960123456\",\"sent_at\":null,\"delivered_at\":null,\"read_at\":null,\"error\":{\"code\":null,\"message\":\"Insufficient WhatsApp balance\"},\"category\":\"MARKETING\",\"billable\":true,\"refunded\":true}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "results": [
+            {
+              "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+              "status": "REJECTED",
+              "user_reference_id": "inv-9",
+              "to": "260971234567",
+              "from": "260960123456",
+              "sent_at": null,
+              "delivered_at": null,
+              "read_at": null,
+              "error": {
+                "code": null,
+                "message": "Insufficient WhatsApp balance"
+              },
+              "category": "MARKETING",
+              "billable": true,
+              "refunded": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "status-400-docs-example",
+      "operation": "whatsapp.status",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"message_ids must hold between 1 and 100 entries\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "message_ids must hold between 1 and 100 entries",
+          "api_reference": "1764184470578998353",
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "templates-docs-example",
+      "operation": "whatsapp.templates",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"templates\":[{\"authentication\":null,\"body\":{\"text\":\"Hi {{1}}, your order {{2}} is ready for collection.\",\"variables\":[\"1\",\"2\"]},\"buttons\":[{\"index\":0,\"text\":\"Track order\",\"type\":\"url\",\"url\":\"https://example.com/orders/{{1}}\"}],\"category\":\"UTILITY\",\"footer\":\"Reply STOP to opt out\",\"from\":\"260960123456\",\"header\":{\"type\":\"image\",\"variables\":[]},\"language\":\"en_US\",\"name\":\"order_ready\"},{\"authentication\":{\"code_expiration_minutes\":10,\"otp_type\":\"COPY_CODE\"},\"body\":{\"text\":\"{{1}} is your verification code.\",\"variables\":[]},\"buttons\":[{\"index\":0,\"otp_type\":\"COPY_CODE\",\"type\":\"otp\"}],\"category\":\"AUTHENTICATION\",\"footer\":null,\"from\":\"260960123456\",\"header\":null,\"language\":\"en\",\"name\":\"login_code\"}]},\"message\":\"successful\",\"success\":true}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "templates": [
+            {
+              "authentication": null,
+              "body": {
+                "text": "Hi {{1}}, your order {{2}} is ready for collection.",
+                "variables": [
+                  "1",
+                  "2"
+                ]
+              },
+              "buttons": [
+                {
+                  "index": 0,
+                  "text": "Track order",
+                  "type": "url",
+                  "url": "https://example.com/orders/{{1}}"
+                }
+              ],
+              "category": "UTILITY",
+              "footer": "Reply STOP to opt out",
+              "from": "260960123456",
+              "header": {
+                "type": "image",
+                "variables": []
+              },
+              "language": "en_US",
+              "name": "order_ready"
+            },
+            {
+              "authentication": {
+                "code_expiration_minutes": 10,
+                "otp_type": "COPY_CODE"
+              },
+              "body": {
+                "text": "{{1}} is your verification code.",
+                "variables": []
+              },
+              "buttons": [
+                {
+                  "index": 0,
+                  "otp_type": "COPY_CODE",
+                  "type": "otp"
+                }
+              ],
+              "category": "AUTHENTICATION",
+              "footer": null,
+              "from": "260960123456",
+              "header": null,
+              "language": "en",
+              "name": "login_code"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "balance-sms-docs-example",
+      "operation": "balance.get",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":1250,\"bundle_type\":\"SMS\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+      },
+      "expect": {
+        "result": {
+          "message": "Balance retrieved successfully",
+          "balance": 1250,
+          "bundle_type": "SMS",
+          "client_id": "UC-00042",
+          "client_name": "Acme Ltd"
+        }
+      }
+    },
+    {
+      "id": "balance-whatsapp-integer",
+      "description": "The current gateway rounds every balance to a whole number.",
+      "operation": "balance.get",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":37,\"bundle_type\":\"WHATSAPP\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+      },
+      "expect": {
+        "result": {
+          "message": "Balance retrieved successfully",
+          "balance": 37,
+          "bundle_type": "WHATSAPP",
+          "client_id": "UC-00042",
+          "client_name": "Acme Ltd"
+        }
+      }
+    },
+    {
+      "id": "balance-whatsapp-fractional",
+      "description": "The docs promise fractional WhatsApp balances: a decimal must parse exactly.",
+      "operation": "balance.get",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":37.25,\"bundle_type\":\"WHATSAPP\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+      },
+      "expect": {
+        "result": {
+          "message": "Balance retrieved successfully",
+          "balance": 37.25,
+          "bundle_type": "WHATSAPP",
+          "client_id": "UC-00042",
+          "client_name": "Acme Ltd"
+        }
+      }
+    },
+    {
+      "id": "balance-client-not-found",
+      "description": "The balance envelope uses status, and has no api_reference.",
+      "operation": "balance.get",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":false,\"message\":\"CLIENT_NOT_FOUND\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "CLIENT_NOT_FOUND",
+          "message": "CLIENT_NOT_FOUND",
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "balance-all-docs-example",
+      "operation": "balance.all",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":true,\"message\":\"All balances retrieved successfully\",\"balances\":{\"SMS\":1250,\"EMAIL\":4000,\"WHATSAPP\":37.5},\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+      },
+      "expect": {
+        "result": {
+          "message": "All balances retrieved successfully",
+          "balances": {
+            "SMS": 1250,
+            "EMAIL": 4000,
+            "WHATSAPP": 37.5
+          },
+          "client_id": "UC-00042",
+          "client_name": "Acme Ltd"
+        }
+      }
+    },
+    {
+      "id": "balance-all-client-not-found",
+      "operation": "balance.all",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":false,\"message\":\"CLIENT_NOT_FOUND\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_error",
+          "class": "APIError",
+          "code": "CLIENT_NOT_FOUND",
+          "message": "CLIENT_NOT_FOUND",
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "health-docs-example",
+      "operation": "health",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":\"ok\",\"timestamp\":\"2026-10-22T08:15:30.412Z\",\"version\":\"0.1.0\",\"environment\":\"production\"}"
+      },
+      "expect": {
+        "result": {
+          "status": "ok",
+          "timestamp": "2026-10-22T08:15:30.412Z",
+          "version": "0.1.0",
+          "environment": "production"
+        }
+      }
+    },
+    {
+      "id": "health-microsecond-timestamp",
+      "description": "The gateway's timestamp carries microseconds; keep it as the string received.",
+      "operation": "health",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":\"ok\",\"timestamp\":\"2026-11-02T09:41:07.123456Z\",\"version\":\"0.1.0\",\"environment\":\"production\"}"
+      },
+      "expect": {
+        "result": {
+          "status": "ok",
+          "timestamp": "2026-11-02T09:41:07.123456Z",
+          "version": "0.1.0",
+          "environment": "production"
+        }
+      }
+    },
+    {
+      "id": "unknown-fields-preserved-sms",
+      "description": "Unknown fields at the envelope and the item level are preserved, and an unknown status passes through.",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"message\":\"successful\",\"success\":true,\"request_id\":\"r-1\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"QUEUED_FOR_CARRIER\",\"mobile_number\":\"260971234567\",\"network\":\"MTN ZM\",\"parts\":2}]}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "request_id": "r-1",
+          "results": [
+            {
+              "message_id": "dff31690-b450-4000-a6b7-141d8523ef10",
+              "status": "QUEUED_FOR_CARRIER",
+              "mobile_number": "260971234567",
+              "network": "MTN ZM",
+              "parts": 2
+            }
+          ]
+        },
+        "helpers": {
+          "accepted": [],
+          "invalid": [
+            0
+          ],
+          "by_number": {
+            "260971234567": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "unknown-fields-preserved-session",
+      "operation": "whatsapp.send_session",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"api_reference\":\"1764184470578998353\",\"message\":\"successful\",\"success\":true,\"data\":{\"category\":\"SERVICE\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":null,\"conversation_id\":77,\"pricing\":{\"units\":0}}}"
+      },
+      "expect": {
+        "result": {
+          "api_reference": "1764184470578998353",
+          "message": "successful",
+          "category": "SERVICE",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "status": "ACKNOWLEDGED",
+          "to": "260971234567",
+          "user_reference_id": null,
+          "conversation_id": 77,
+          "pricing": {
+            "units": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "unknown-fields-preserved-balance",
+      "operation": "balance.all",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\":true,\"message\":\"All balances retrieved successfully\",\"balances\":{\"SMS\":1250,\"EMAIL\":4000,\"WHATSAPP\":37.5,\"SMS_INTERNATIONAL\":12},\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\",\"currency_note\":\"units\"}"
+      },
+      "expect": {
+        "result": {
+          "message": "All balances retrieved successfully",
+          "balances": {
+            "SMS": 1250,
+            "EMAIL": 4000,
+            "WHATSAPP": 37.5,
+            "SMS_INTERNATIONAL": 12
+          },
+          "client_id": "UC-00042",
+          "client_name": "Acme Ltd",
+          "currency_note": "units"
+        }
+      }
+    },
+    {
+      "id": "phoenix-400-malformed-json",
+      "operation": "sms.send",
+      "http": {
+        "status": 400,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"errors\":{\"detail\":\"Bad Request\"}}"
+      },
+      "expect": {
+        "error": {
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "message": "Bad Request",
+          "api_reference": null,
+          "http_status": 400,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "phoenix-404",
+      "operation": "health",
+      "http": {
+        "status": 404,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"errors\":{\"detail\":\"Not Found\"}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": "Not Found",
+          "api_reference": null,
+          "http_status": 404,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "phoenix-406",
+      "operation": "whatsapp.templates",
+      "http": {
+        "status": 406,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"errors\":{\"detail\":\"Not Acceptable\"}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": "Not Acceptable",
+          "api_reference": null,
+          "http_status": 406,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "phoenix-500",
+      "operation": "balance.get",
+      "http": {
+        "status": 500,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "message": "Internal Server Error",
+          "api_reference": null,
+          "http_status": 500,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "html-502-from-proxy",
+      "description": "Not JSON: message is SDK text (null here means any non-empty string).",
+      "operation": "sms.send",
+      "http": {
+        "status": 502,
+        "headers": {
+          "content-type": "text/html"
+        },
+        "body_text": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body>\r\n<center><h1>502 Bad Gateway</h1></center>\r\n</body>\r\n</html>\r\n"
+      },
+      "expect": {
+        "error": {
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 502,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "html-503-from-proxy",
+      "operation": "balance.all",
+      "http": {
+        "status": 503,
+        "headers": {
+          "content-type": "text/html"
+        },
+        "body_text": "<html><body>Service Unavailable</body></html>"
+      },
+      "expect": {
+        "error": {
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 503,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "empty-200-body",
+      "description": "A 2xx without a JSON object is an APIStatusError, never a result.",
+      "operation": "sms.send",
+      "http": {
+        "status": 200,
+        "headers": {},
+        "body_text": ""
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "invalid-json-200-body",
+      "operation": "balance.get",
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"status\": tru"
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "non-object-json-200-body",
+      "operation": "whatsapp.status",
+      "off_spec": true,
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "[]"
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "200-without-success-flag",
+      "operation": "email.send",
+      "off_spec": true,
+      "http": {
+        "status": 200,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"successful\",\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "message": null,
+          "api_reference": null,
+          "http_status": 200,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "429-rate-limited",
+      "description": "retry_after is the seconds to the next UTC minute: 60 - (now mod 60).",
+      "operation": "sms.send",
+      "now_unix": 1767225630,
+      "http": {
+        "status": 429,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "rate_limit_error",
+          "class": "RateLimitError",
+          "code": "RATE_LIMIT_EXCEEDED",
+          "message": "RATE_LIMIT_EXCEEDED",
+          "api_reference": "1764184470578998353",
+          "http_status": 429,
+          "data_present": false,
+          "retry_after": 30
+        }
+      }
+    },
+    {
+      "id": "429-rate-limited-end-of-minute",
+      "operation": "balance.get",
+      "now_unix": 1767225659,
+      "http": {
+        "status": 429,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "rate_limit_error",
+          "class": "RateLimitError",
+          "code": "RATE_LIMIT_EXCEEDED",
+          "message": "RATE_LIMIT_EXCEEDED",
+          "api_reference": "1764184470578998353",
+          "http_status": 429,
+          "data_present": false,
+          "retry_after": 1
+        }
+      }
+    },
+    {
+      "id": "401-authentication-failed",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"AUTHENTICATION_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "AUTHENTICATION_FAILED",
+          "message": "AUTHENTICATION_FAILED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-credential-disabled",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"CREDENTIAL_DISABLED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "CREDENTIAL_DISABLED",
+          "message": "CREDENTIAL_DISABLED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-client-not-found",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"CLIENT_NOT_FOUND\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "CLIENT_NOT_FOUND",
+          "message": "CLIENT_NOT_FOUND",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-client-disabled",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"CLIENT_DISABLED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "CLIENT_DISABLED",
+          "message": "CLIENT_DISABLED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-credential-expired",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"CREDENTIAL_EXPIRED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "CREDENTIAL_EXPIRED",
+          "message": "CREDENTIAL_EXPIRED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-ip-not-allowed",
+      "operation": "balance.get",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"IP_NOT_ALLOWED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "IP_NOT_ALLOWED",
+          "message": "IP_NOT_ALLOWED",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-missing-api-key",
+      "operation": "whatsapp.templates",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Missing API key. Provide X-API-Key header or Authorization: Bearer <api_key>\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "MISSING_API_KEY",
+          "message": "Missing API key. Provide X-API-Key header or Authorization: Bearer <api_key>",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    },
+    {
+      "id": "401-invalid-authorization-format",
+      "operation": "whatsapp.templates",
+      "http": {
+        "status": 401,
+        "headers": {
+          "content-type": "application/json; charset=utf-8"
+        },
+        "body_text": "{\"message\":\"Invalid authorization format. Use 'Bearer <api_key>' or 'Basic <base64>'\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+      },
+      "expect": {
+        "error": {
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "INVALID_AUTHORIZATION",
+          "message": "Invalid authorization format. Use 'Bearer <api_key>' or 'Basic <base64>'",
+          "api_reference": "1764184470578998353",
+          "http_status": 401,
+          "data_present": false
+        }
+      }
+    }
+  ]
+}

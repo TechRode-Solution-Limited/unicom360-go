@@ -1,0 +1,466 @@
+{
+  "version": "0.1.0",
+  "description": "Signed webhook deliveries and the event each must parse to. Headers are signed by scripts/gen-signatures. See conformance/README.md.",
+  "vectors": [
+    {
+      "id": "status-delivered-docs-example",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.status",
+        "X-Unicom360-Delivery": "1042",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=6fb868f62128ff2d15481835b428c19e100586111de2c77426359aebedfaf315"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T08:16:02Z\",\"data\":{\"billable\":true,\"category\":\"UTILITY\",\"channel\":\"whatsapp\",\"error\":null,\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"delivered\",\"timestamp\":\"2026-10-24T08:16:01Z\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},\"event\":\"message.status\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_status",
+        "event": "message.status",
+        "delivery_id": "1042",
+        "created_at": "2026-10-24T08:16:02Z",
+        "data": {
+          "billable": true,
+          "category": "UTILITY",
+          "channel": "whatsapp",
+          "error": null,
+          "from": "260960123456",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "status": "delivered",
+          "timestamp": "2026-10-24T08:16:01Z",
+          "to": "260971234567",
+          "user_reference_id": "inv-42"
+        }
+      }
+    },
+    {
+      "id": "status-failed-with-meta-error",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.status",
+        "X-Unicom360-Delivery": "1043",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=f3570140d3a14bc90784df2ac654f2561f90fa4117ffa93dbdf2f3d62d788ee9"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T08:16:02Z\",\"data\":{\"billable\":true,\"category\":\"MARKETING\",\"channel\":\"whatsapp\",\"error\":{\"code\":131026,\"message\":\"Message undeliverable\"},\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60\",\"status\":\"failed\",\"timestamp\":\"2026-10-24T08:16:01Z\",\"to\":\"260961234567\",\"user_reference_id\":null},\"event\":\"message.status\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_status",
+        "event": "message.status",
+        "delivery_id": "1043",
+        "created_at": "2026-10-24T08:16:02Z",
+        "data": {
+          "billable": true,
+          "category": "MARKETING",
+          "channel": "whatsapp",
+          "error": {
+            "code": 131026,
+            "message": "Message undeliverable"
+          },
+          "from": "260960123456",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60",
+          "status": "failed",
+          "timestamp": "2026-10-24T08:16:01Z",
+          "to": "260961234567",
+          "user_reference_id": null
+        }
+      }
+    },
+    {
+      "id": "status-failed-without-code",
+      "description": "A failure without Meta's code: error.code is null.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.status",
+        "X-Unicom360-Delivery": "1044",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=f641620c63c3eba20329502e1d95d786c40fc4542bdd830ec4794f8b7bba1346"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T08:17:00Z\",\"data\":{\"billable\":true,\"category\":\"UTILITY\",\"channel\":\"whatsapp\",\"error\":{\"code\":null,\"message\":\"Message failed\"},\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"failed\",\"timestamp\":\"2026-10-24T08:16:01Z\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},\"event\":\"message.status\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_status",
+        "event": "message.status",
+        "delivery_id": "1044",
+        "created_at": "2026-10-24T08:17:00Z",
+        "data": {
+          "billable": true,
+          "category": "UTILITY",
+          "channel": "whatsapp",
+          "error": {
+            "code": null,
+            "message": "Message failed"
+          },
+          "from": "260960123456",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "status": "failed",
+          "timestamp": "2026-10-24T08:16:01Z",
+          "to": "260971234567",
+          "user_reference_id": "inv-42"
+        }
+      }
+    },
+    {
+      "id": "status-read-with-unknown-field",
+      "description": "Unknown fields are kept.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.status",
+        "X-Unicom360-Delivery": "1045",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=fec49f4750f0c30a2bea93cd28eb68dc29ea2454773ce964e1333a1b92de8aac"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T08:20:46Z\",\"data\":{\"billable\":true,\"category\":\"UTILITY\",\"channel\":\"whatsapp\",\"error\":null,\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"read\",\"timestamp\":\"2026-10-24T08:20:45Z\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\",\"conversation_id\":77},\"event\":\"message.status\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_status",
+        "event": "message.status",
+        "delivery_id": "1045",
+        "created_at": "2026-10-24T08:20:46Z",
+        "data": {
+          "billable": true,
+          "category": "UTILITY",
+          "channel": "whatsapp",
+          "error": null,
+          "from": "260960123456",
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "status": "read",
+          "timestamp": "2026-10-24T08:20:45Z",
+          "to": "260971234567",
+          "user_reference_id": "inv-42",
+          "conversation_id": 77
+        }
+      }
+    },
+    {
+      "id": "received-text-docs-example",
+      "description": "The docs example, with payload: null.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2001",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=41fca1239db82c3a88619d81d733d6c61e3149b7bf8f6c55ad13f65282982835"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:02:11Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":null,\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==\",\"payload\":null,\"reply_to\":null,\"text\":\"Hi, is my order ready?\",\"timestamp\":\"2026-10-24T09:02:10Z\",\"to\":\"260960123456\",\"type\":\"text\",\"window_expires_at\":\"2026-10-25T09:02:10Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2001",
+        "created_at": "2026-10-24T09:02:11Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": null,
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==",
+          "payload": null,
+          "reply_to": null,
+          "text": "Hi, is my order ready?",
+          "timestamp": "2026-10-24T09:02:10Z",
+          "to": "260960123456",
+          "type": "text",
+          "window_expires_at": "2026-10-25T09:02:10Z"
+        }
+      }
+    },
+    {
+      "id": "received-image-with-caption",
+      "description": "media is {id, mime_type, filename}; the caption arrives in text.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2002",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=75c65c03cd55e1d21b6bec3e4a0de06175c8e9acfa92e95a313b5f90006e4997"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:05:41Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":{\"filename\":null,\"id\":\"1234567890123456\",\"mime_type\":\"image/jpeg\"},\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggRjM5QjRBMDk3NjE0OUMxRUE3QjhDNjVEQjI1QTc2RjQA\",\"payload\":null,\"reply_to\":null,\"text\":\"Here is the receipt\",\"timestamp\":\"2026-10-24T09:05:40Z\",\"to\":\"260960123456\",\"type\":\"image\",\"window_expires_at\":\"2026-10-25T09:05:40Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2002",
+        "created_at": "2026-10-24T09:05:41Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": {
+            "filename": null,
+            "id": "1234567890123456",
+            "mime_type": "image/jpeg"
+          },
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggRjM5QjRBMDk3NjE0OUMxRUE3QjhDNjVEQjI1QTc2RjQA",
+          "payload": null,
+          "reply_to": null,
+          "text": "Here is the receipt",
+          "timestamp": "2026-10-24T09:05:40Z",
+          "to": "260960123456",
+          "type": "image",
+          "window_expires_at": "2026-10-25T09:05:40Z"
+        }
+      }
+    },
+    {
+      "id": "received-document",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2003",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=091773d9de319cbb7904248e984e4c238a09091f60ac3bf1a1b87197a4836344"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:06:12Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":{\"filename\":\"proof-of-payment.pdf\",\"id\":\"9876543210987654\",\"mime_type\":\"application/pdf\"},\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQzE3QTk4MjQ0RkI1NjA3QkYxRDQ4MDJGOEIzNTAyQjEA\",\"payload\":null,\"reply_to\":null,\"text\":null,\"timestamp\":\"2026-10-24T09:06:11Z\",\"to\":\"260960123456\",\"type\":\"document\",\"window_expires_at\":\"2026-10-25T09:06:11Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2003",
+        "created_at": "2026-10-24T09:06:12Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": {
+            "filename": "proof-of-payment.pdf",
+            "id": "9876543210987654",
+            "mime_type": "application/pdf"
+          },
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQzE3QTk4MjQ0RkI1NjA3QkYxRDQ4MDJGOEIzNTAyQjEA",
+          "payload": null,
+          "reply_to": null,
+          "text": null,
+          "timestamp": "2026-10-24T09:06:11Z",
+          "to": "260960123456",
+          "type": "document",
+          "window_expires_at": "2026-10-25T09:06:11Z"
+        }
+      }
+    },
+    {
+      "id": "received-interactive-reply",
+      "description": "A tapped button: the title is in text, payload is null, and reply_to is the wamid of our interactive message.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2004",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=0edfff7a4bc166b2f706a024f222d1a24e0106f520855f9ddb57a4d1269cf505"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:10:03Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":null,\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggNUQ3RjJBOTQwQjE4QzM2RTc3MEE5MjE1RkM4NDNEMDIA\",\"payload\":null,\"reply_to\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAERgSNkI4QzQ3RDAxQTlFMjVGQjc1AA==\",\"text\":\"Deliver\",\"timestamp\":\"2026-10-24T09:10:02Z\",\"to\":\"260960123456\",\"type\":\"interactive\",\"window_expires_at\":\"2026-10-25T09:10:02Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2004",
+        "created_at": "2026-10-24T09:10:03Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": null,
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggNUQ3RjJBOTQwQjE4QzM2RTc3MEE5MjE1RkM4NDNEMDIA",
+          "payload": null,
+          "reply_to": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAERgSNkI4QzQ3RDAxQTlFMjVGQjc1AA==",
+          "text": "Deliver",
+          "timestamp": "2026-10-24T09:10:02Z",
+          "to": "260960123456",
+          "type": "interactive",
+          "window_expires_at": "2026-10-25T09:10:02Z"
+        }
+      }
+    },
+    {
+      "id": "received-location",
+      "description": "payload is Meta's location object.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2005",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=9bc7d620e6bf69bc194045a086fa2a002bd05677874571bf040a618fbc842ddd"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:07:12Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":null,\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggMkQ1NkM3RTE4OUQ0RTlBRjAzQjExNzg2NjE0RkE1QzMA\",\"payload\":{\"address\":\"Cairo Road, Lusaka\",\"latitude\":-15.4167,\"longitude\":28.2833,\"name\":\"Cairo Road branch\"},\"reply_to\":null,\"text\":\"Location: Cairo Road branch, Cairo Road, Lusaka\",\"timestamp\":\"2026-10-24T09:07:11Z\",\"to\":\"260960123456\",\"type\":\"location\",\"window_expires_at\":\"2026-10-25T09:07:11Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2005",
+        "created_at": "2026-10-24T09:07:12Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": null,
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggMkQ1NkM3RTE4OUQ0RTlBRjAzQjExNzg2NjE0RkE1QzMA",
+          "payload": {
+            "address": "Cairo Road, Lusaka",
+            "latitude": -15.4167,
+            "longitude": 28.2833,
+            "name": "Cairo Road branch"
+          },
+          "reply_to": null,
+          "text": "Location: Cairo Road branch, Cairo Road, Lusaka",
+          "timestamp": "2026-10-24T09:07:11Z",
+          "to": "260960123456",
+          "type": "location",
+          "window_expires_at": "2026-10-25T09:07:11Z"
+        }
+      }
+    },
+    {
+      "id": "received-contacts",
+      "description": "Contacts are wrapped: payload is {\"contacts\": [...]}.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2006",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=3e22dc3ab7ddd7f33c747c2b65b26d481752f45161551679574202e55dbd5c2b"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:08:30Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":null,\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggOUI0RTZFNTFDMjI3QTBENDhGMDE2QjM0RTg5Mjc3QjYA\",\"payload\":{\"contacts\":[{\"name\":{\"first_name\":\"Ada\",\"formatted_name\":\"Ada Banda\",\"last_name\":\"Banda\"},\"phones\":[{\"phone\":\"+260 97 7654321\",\"type\":\"CELL\",\"wa_id\":\"260977654321\"}]}]},\"reply_to\":null,\"text\":\"Contact: Ada Banda\",\"timestamp\":\"2026-10-24T09:08:29Z\",\"to\":\"260960123456\",\"type\":\"contacts\",\"window_expires_at\":\"2026-10-25T09:08:29Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2006",
+        "created_at": "2026-10-24T09:08:30Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": null,
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggOUI0RTZFNTFDMjI3QTBENDhGMDE2QjM0RTg5Mjc3QjYA",
+          "payload": {
+            "contacts": [
+              {
+                "name": {
+                  "first_name": "Ada",
+                  "formatted_name": "Ada Banda",
+                  "last_name": "Banda"
+                },
+                "phones": [
+                  {
+                    "phone": "+260 97 7654321",
+                    "type": "CELL",
+                    "wa_id": "260977654321"
+                  }
+                ]
+              }
+            ]
+          },
+          "reply_to": null,
+          "text": "Contact: Ada Banda",
+          "timestamp": "2026-10-24T09:08:29Z",
+          "to": "260960123456",
+          "type": "contacts",
+          "window_expires_at": "2026-10-25T09:08:29Z"
+        }
+      }
+    },
+    {
+      "id": "received-reaction",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.received",
+        "X-Unicom360-Delivery": "2007",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=a1f6638174b0c351721514af8da048b79c335a17f6ca017eeac01dd5b84c80ca"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:11:45Z\",\"data\":{\"channel\":\"whatsapp\",\"from\":\"260971234567\",\"media\":null,\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggRTdBQjQ0NjI5ODE1QjBGMjE3QzM1MDk4NzZCM0ExNDIA\",\"payload\":{\"emoji\":\"👍\",\"message_id\":\"wamid.HBgMMjYwOTcxMjM0NTY3FQIAERgSNkI4QzQ3RDAxQTlFMjVGQjc1AA==\"},\"reply_to\":null,\"text\":\"Reaction 👍\",\"timestamp\":\"2026-10-24T09:11:44Z\",\"to\":\"260960123456\",\"type\":\"reaction\",\"window_expires_at\":\"2026-10-25T09:11:44Z\"},\"event\":\"message.received\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "message_received",
+        "event": "message.received",
+        "delivery_id": "2007",
+        "created_at": "2026-10-24T09:11:45Z",
+        "data": {
+          "channel": "whatsapp",
+          "from": "260971234567",
+          "media": null,
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggRTdBQjQ0NjI5ODE1QjBGMjE3QzM1MDk4NzZCM0ExNDIA",
+          "payload": {
+            "emoji": "👍",
+            "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAERgSNkI4QzQ3RDAxQTlFMjVGQjc1AA=="
+          },
+          "reply_to": null,
+          "text": "Reaction 👍",
+          "timestamp": "2026-10-24T09:11:44Z",
+          "to": "260960123456",
+          "type": "reaction",
+          "window_expires_at": "2026-10-25T09:11:44Z"
+        }
+      }
+    },
+    {
+      "id": "webhook-test",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "webhook.test",
+        "X-Unicom360-Delivery": "3001",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=b5219560c28f5ae89104d450a51727c5a0568697017a10a29b95c112e15526b6"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T09:30:00Z\",\"data\":{\"message\":\"This is a test event from Unicom360.\"},\"event\":\"webhook.test\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "test",
+        "event": "webhook.test",
+        "delivery_id": "3001",
+        "created_at": "2026-10-24T09:30:00Z",
+        "data": {
+          "message": "This is a test event from Unicom360."
+        }
+      }
+    },
+    {
+      "id": "unknown-event",
+      "description": "An event this SDK does not know parses as an unknown event; it must not raise.",
+      "secret": "_p_1O9_F0Ntqznvs5yv1hE8-EVvIBFrIt10-7xoqVB8",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Unicom360-Event": "message.foo",
+        "X-Unicom360-Delivery": "4001",
+        "X-Unicom360-Timestamp": "1792829762",
+        "X-Unicom360-Signature": "sha256=c651505debea463ea2d61ca1ccad96333d711ad8f225fc019b97821929ab11f1"
+      },
+      "body_text": "{\"created_at\":\"2026-10-24T11:00:00Z\",\"data\":{\"anything\":[1,2,3],\"nested\":{\"ok\":true}},\"event\":\"message.foo\"}",
+      "now_unix": 1792829762,
+      "tolerance": 300,
+      "expect": {
+        "kind": "unknown",
+        "event": "message.foo",
+        "delivery_id": "4001",
+        "created_at": "2026-10-24T11:00:00Z",
+        "data": {
+          "anything": [
+            1,
+            2,
+            3
+          ],
+          "nested": {
+            "ok": true
+          }
+        }
+      }
+    }
+  ]
+}

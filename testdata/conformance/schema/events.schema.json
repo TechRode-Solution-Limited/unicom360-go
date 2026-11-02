@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/events.schema.json",
+  "title": "webhooks/events.json: signed webhook deliveries and the event each must parse to",
+  "type": "object",
+  "required": [
+    "version",
+    "description",
+    "vectors"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "$ref": "common.schema.json#/$defs/version"
+    },
+    "description": {
+      "type": "string"
+    },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "secret",
+          "headers",
+          "body_text",
+          "now_unix",
+          "tolerance",
+          "expect"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "description": {
+            "type": "string"
+          },
+          "secret": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "headers": {
+            "type": "object",
+            "required": [
+              "X-Unicom360-Event",
+              "X-Unicom360-Delivery",
+              "X-Unicom360-Timestamp",
+              "X-Unicom360-Signature"
+            ],
+            "properties": {
+              "X-Unicom360-Event": {
+                "type": "string"
+              },
+              "X-Unicom360-Delivery": {
+                "type": "string"
+              },
+              "X-Unicom360-Timestamp": {
+                "type": "string"
+              },
+              "X-Unicom360-Signature": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "body_text": {
+            "type": "string"
+          },
+          "now_unix": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tolerance": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "expect": {
+            "type": "object",
+            "required": [
+              "kind",
+              "event",
+              "delivery_id",
+              "created_at",
+              "data"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "enum": [
+                  "message_status",
+                  "message_received",
+                  "test",
+                  "unknown"
+                ]
+              },
+              "event": {
+                "type": "string"
+              },
+              "delivery_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "created_at": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "data": {
+                "type": [
+                  "object",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

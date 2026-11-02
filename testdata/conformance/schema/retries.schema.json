@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/retries.schema.json",
+  "title": "retries.json: response and transport sequences, and the attempts and sleeps each must produce",
+  "type": "object",
+  "required": ["version", "description", "vectors"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "description": { "type": "string" },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "operation", "params", "now_unix", "config", "steps", "expect"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "description": { "type": "string" },
+          "operation": { "$ref": "common.schema.json#/$defs/operation" },
+          "params": { "type": "object" },
+          "now_unix": { "$ref": "common.schema.json#/$defs/unix_time" },
+          "config": {
+            "type": "object",
+            "required": ["max_retries", "max_retry_wait"],
+            "additionalProperties": false,
+            "properties": {
+              "max_retries": { "type": "integer", "minimum": 0 },
+              "max_retry_wait": { "type": "number", "minimum": 0 }
+            }
+          },
+          "steps": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "required": ["http"],
+                  "additionalProperties": false,
+                  "properties": { "http": { "$ref": "common.schema.json#/$defs/http" } }
+                },
+                {
+                  "type": "object",
+                  "required": ["transport"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "transport": { "enum": ["connect_refused", "dns_failure", "timeout_after_send", "reset_after_send"] }
+                  }
+                }
+              ]
+            }
+          },
+          "expect": {
+            "type": "object",
+            "required": ["attempts", "sleeps", "outcome"],
+            "additionalProperties": false,
+            "properties": {
+              "attempts": { "type": "integer", "minimum": 1 },
+              "sleeps": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["min", "max"],
+                  "additionalProperties": false,
+                  "properties": {
+                    "min": { "type": "number", "minimum": 0 },
+                    "max": { "type": "number", "minimum": 0 }
+                  }
+                }
+              },
+              "outcome": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "required": ["kind"],
+                    "additionalProperties": false,
+                    "properties": { "kind": { "const": "result" } }
+                  },
+                  {
+                    "type": "object",
+                    "required": ["kind", "type", "class", "code", "http_status"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": { "const": "error" },
+                      "type": { "$ref": "common.schema.json#/$defs/error_type" },
+                      "class": { "$ref": "common.schema.json#/$defs/error_class" },
+                      "code": { "oneOf": [{ "$ref": "common.schema.json#/$defs/code" }, { "type": "null" }] },
+                      "http_status": { "type": ["integer", "null"] }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

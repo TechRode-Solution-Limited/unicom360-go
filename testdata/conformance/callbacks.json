@@ -1,0 +1,141 @@
+{
+  "version": "0.1.0",
+  "description": "The unsigned SMS and email delivery reports and their parsed form. See conformance/README.md.",
+  "vectors": [
+    {
+      "id": "sms-delivered-docs-example",
+      "kind": "sms",
+      "body_text": "{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"DELIVERED\",\"mobile_number\":\"260971234567\"}",
+      "expect": {
+        "result": {
+          "message_id": "dff31690-b450-4000-a6b7-141d8523ef10",
+          "status": "DELIVERED",
+          "mobile_number": "260971234567"
+        }
+      }
+    },
+    {
+      "id": "sms-sent",
+      "kind": "sms",
+      "body_text": "{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"SENT\",\"mobile_number\":\"260971234567\"}",
+      "expect": {
+        "result": {
+          "message_id": "dff31690-b450-4000-a6b7-141d8523ef10",
+          "status": "SENT",
+          "mobile_number": "260971234567"
+        }
+      }
+    },
+    {
+      "id": "sms-failed",
+      "kind": "sms",
+      "body_text": "{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"FAILED\",\"mobile_number\":\"260961234567\"}",
+      "expect": {
+        "result": {
+          "message_id": "dff31690-b450-4001-a6b7-141d8523ef10",
+          "status": "FAILED",
+          "mobile_number": "260961234567"
+        }
+      }
+    },
+    {
+      "id": "sms-unknown-error",
+      "kind": "sms",
+      "body_text": "{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"UNKNOWN_ERROR\",\"mobile_number\":\"260961234567\"}",
+      "expect": {
+        "result": {
+          "message_id": "dff31690-b450-4001-a6b7-141d8523ef10",
+          "status": "UNKNOWN_ERROR",
+          "mobile_number": "260961234567"
+        }
+      }
+    },
+    {
+      "id": "sms-unknown-status-and-extra-field",
+      "description": "An unknown status passes through and unknown fields are kept.",
+      "kind": "sms",
+      "body_text": "{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"EXPIRED\",\"mobile_number\":\"260961234567\",\"network\":\"Airtel ZM\"}",
+      "expect": {
+        "result": {
+          "message_id": "dff31690-b450-4001-a6b7-141d8523ef10",
+          "status": "EXPIRED",
+          "mobile_number": "260961234567",
+          "network": "Airtel ZM"
+        }
+      }
+    },
+    {
+      "id": "email-delivered-docs-example",
+      "description": "The integer message_id becomes the string the send response gave.",
+      "kind": "email",
+      "body_text": "{\"message_id\":48213,\"status\":\"DELIVERED\",\"email_address\":\"jane@example.com\",\"message\":\"success\"}",
+      "expect": {
+        "result": {
+          "message_id": "48213",
+          "status": "DELIVERED",
+          "email_address": "jane@example.com",
+          "message": "success"
+        }
+      }
+    },
+    {
+      "id": "email-sent",
+      "kind": "email",
+      "body_text": "{\"message_id\":48214,\"status\":\"SENT\",\"email_address\":\"john@example.com\",\"message\":\"success\"}",
+      "expect": {
+        "result": {
+          "message_id": "48214",
+          "status": "SENT",
+          "email_address": "john@example.com",
+          "message": "success"
+        }
+      }
+    },
+    {
+      "id": "email-failed-with-reason",
+      "kind": "email",
+      "body_text": "{\"message_id\":48215,\"status\":\"FAILED\",\"email_address\":\"bounce@example.com\",\"message\":\"550 5.1.1 mailbox unavailable\"}",
+      "expect": {
+        "result": {
+          "message_id": "48215",
+          "status": "FAILED",
+          "email_address": "bounce@example.com",
+          "message": "550 5.1.1 mailbox unavailable"
+        }
+      }
+    },
+    {
+      "id": "email-string-message-id",
+      "description": "A string message_id is accepted too.",
+      "kind": "email",
+      "off_spec": true,
+      "body_text": "{\"message_id\":\"48216\",\"status\":\"DELIVERED\",\"email_address\":\"jane@example.com\",\"message\":\"success\"}",
+      "expect": {
+        "result": {
+          "message_id": "48216",
+          "status": "DELIVERED",
+          "email_address": "jane@example.com",
+          "message": "success"
+        }
+      }
+    },
+    {
+      "id": "sms-invalid-json",
+      "description": "Not JSON: parse_sms_callback raises.",
+      "kind": "sms",
+      "body_text": "{\"message_id\": ",
+      "expect": {
+        "error": true
+      }
+    },
+    {
+      "id": "email-not-an-object",
+      "description": "A JSON value that is not an object: parse_email_callback raises.",
+      "kind": "email",
+      "body_text": "[48213]",
+      "expect": {
+        "error": true
+      }
+    }
+  ]
+}

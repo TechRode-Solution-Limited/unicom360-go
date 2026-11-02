@@ -1,0 +1,72 @@
+name: Release
+
+# Push a tag such as v0.1.0 to release. Go modules are published by the tag itself; this
+# workflow tests the tagged commit, creates the GitHub Release from CHANGELOG.md and asks the
+# Go module proxy to fetch the version so `go get` and pkg.go.dev see it at once.
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (Go ${{ matrix.go }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ["1.22", stable]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go vet ./...
+      - run: go test -race -count=1 ./...
+        env:
+          UNICOM360_REQUIRE_FIXTURES: "1"
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag against version.go and CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if ! grep -q "^const Version = \"$version\"$" version.go; then
+            echo "version.go does not say Version = \"$version\"" >&2
+            exit 1
+          fi
+          awk -v v="$version" '
+            index($0, "## [" v "]") == 1 {
+              if ($0 ~ /Unreleased/) { print "CHANGELOG.md still marks " v " as Unreleased: set the date first" > "/dev/stderr"; exit 2 }
+              found = 1; next
+            }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "CHANGELOG.md has no section for $version" >&2
+            exit 1
+          fi
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" --notes-file notes.md
+
+      - name: Warm the Go module proxy
+        run: |
+          url="https://proxy.golang.org/github.com/!tech!rode-!solution-!limited/unicom360-go/@v/${GITHUB_REF_NAME}.info"
+          for _ in 1 2 3 4 5 6; do
+            if curl -sf "$url"; then exit 0; fi
+            sleep 10
+          done
+          echo "The proxy did not fetch ${GITHUB_REF_NAME}; run: curl -sf $url" >&2
+          exit 1

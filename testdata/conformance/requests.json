@@ -1,0 +1,1753 @@
+{
+  "version": "0.1.0",
+  "description": "Each SDK call and the exact HTTP request it must make. See conformance/README.md.",
+  "canned_responses": {
+    "sms.send": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+    },
+    "email.send": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"48213\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"},{\"message_id\":\"48214\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"john@example.com\"}],\"message\":\"successful\",\"success\":true}"
+    },
+    "whatsapp.send_template": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":\"12\",\"user_reference_id\":\"inv-43\"}]},\"message\":\"successful\",\"success\":true}"
+    },
+    "whatsapp.send_session": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"category\":\"SERVICE\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"s-1\"},\"message\":\"successful\",\"success\":true}"
+    },
+    "whatsapp.status": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"results\":[{\"billable\":true,\"category\":\"UTILITY\",\"delivered_at\":\"2026-10-24T08:16:02Z\",\"error\":null,\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"read_at\":\"2026-10-24T08:20:45Z\",\"refunded\":false,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"READ\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"billable\":true,\"category\":\"MARKETING\",\"delivered_at\":null,\"error\":{\"code\":131026,\"message\":\"Message undeliverable\"},\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60\",\"read_at\":null,\"refunded\":true,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"FAILED\",\"to\":\"260961234567\",\"user_reference_id\":null},{\"message_id\":\"00000000-0000-4000-8000-000000000000\",\"status\":\"NOT_FOUND\"}]},\"message\":\"successful\",\"success\":true}"
+    },
+    "whatsapp.templates": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"templates\":[{\"authentication\":null,\"body\":{\"text\":\"Hi {{1}}, your order {{2}} is ready for collection.\",\"variables\":[\"1\",\"2\"]},\"buttons\":[{\"index\":0,\"text\":\"Track order\",\"type\":\"url\",\"url\":\"https://example.com/orders/{{1}}\"}],\"category\":\"UTILITY\",\"footer\":\"Reply STOP to opt out\",\"from\":\"260960123456\",\"header\":{\"type\":\"image\",\"variables\":[]},\"language\":\"en_US\",\"name\":\"order_ready\"},{\"authentication\":{\"code_expiration_minutes\":10,\"otp_type\":\"COPY_CODE\"},\"body\":{\"text\":\"{{1}} is your verification code.\",\"variables\":[]},\"buttons\":[{\"index\":0,\"otp_type\":\"COPY_CODE\",\"type\":\"otp\"}],\"category\":\"AUTHENTICATION\",\"footer\":null,\"from\":\"260960123456\",\"header\":null,\"language\":\"en\",\"name\":\"login_code\"}]},\"message\":\"successful\",\"success\":true}"
+    },
+    "balance.get": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":1250,\"bundle_type\":\"SMS\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+    },
+    "balance.all": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"status\":true,\"message\":\"All balances retrieved successfully\",\"balances\":{\"SMS\":1250,\"EMAIL\":4000,\"WHATSAPP\":37.5},\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+    },
+    "health": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "body_text": "{\"status\":\"ok\",\"timestamp\":\"2026-10-22T08:15:30.412Z\",\"version\":\"0.1.0\",\"environment\":\"production\"}"
+    }
+  },
+  "vectors": [
+    {
+      "id": "sms-to-string-minimal",
+      "description": "A single recipient given as a string is sent as a string; unset optional fields are absent, never null.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/sms",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "Unicom360",
+          "to": "260971234567",
+          "message": "Your order ZM4821 is ready."
+        },
+        "absent_keys": [
+          "/user_reference_id",
+          "/callback_url",
+          "/source"
+        ]
+      }
+    },
+    {
+      "id": "sms-to-array-docs-example",
+      "description": "The docs example.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": [
+          "260971234567",
+          "260961234567"
+        ],
+        "message": "Your verification code is 482193. It expires in 5 minutes.",
+        "callback_url": "https://example.com/webhooks/unicom360/sms"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/sms",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "Unicom360",
+          "to": [
+            "260971234567",
+            "260961234567"
+          ],
+          "message": "Your verification code is 482193. It expires in 5 minutes.",
+          "callback_url": "https://example.com/webhooks/unicom360/sms"
+        },
+        "absent_keys": [
+          "/user_reference_id",
+          "/source"
+        ]
+      }
+    },
+    {
+      "id": "sms-all-fields",
+      "description": "Every field, a one-element array, CR LF and GSM extension characters passed through untouched.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": [
+          "260971234567"
+        ],
+        "message": "Line one\r\nLine two with € and {braces}",
+        "user_reference_id": "order-10421",
+        "callback_url": "https://example.com/webhooks/unicom360/sms",
+        "source": "crm"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/sms",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "Unicom360",
+          "to": [
+            "260971234567"
+          ],
+          "message": "Line one\r\nLine two with € and {braces}",
+          "user_reference_id": "order-10421",
+          "callback_url": "https://example.com/webhooks/unicom360/sms",
+          "source": "crm"
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "email-to-string-minimal",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Your order is confirmed",
+        "email_body": "Thanks for your order."
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/email",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "noreply@yourdomain.com",
+          "to": "jane@example.com",
+          "subject": "Your order is confirmed",
+          "email_body": "Thanks for your order."
+        },
+        "absent_keys": [
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/source"
+        ]
+      }
+    },
+    {
+      "id": "email-docs-example",
+      "description": "The docs example.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": [
+          "jane@example.com",
+          "john@example.com"
+        ],
+        "subject": "Your order is confirmed",
+        "email_body": "<p>Thanks for your order. Order ZM4821 is confirmed.</p>",
+        "reply_to": "support@yourdomain.com",
+        "callback_url": "https://example.com/webhooks/unicom360/email"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/email",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "noreply@yourdomain.com",
+          "to": [
+            "jane@example.com",
+            "john@example.com"
+          ],
+          "subject": "Your order is confirmed",
+          "email_body": "<p>Thanks for your order. Order ZM4821 is confirmed.</p>",
+          "reply_to": "support@yourdomain.com",
+          "callback_url": "https://example.com/webhooks/unicom360/email"
+        },
+        "absent_keys": [
+          "/user_reference_id",
+          "/source"
+        ]
+      }
+    },
+    {
+      "id": "email-all-fields",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": [
+          "jane@example.com"
+        ],
+        "subject": "Invoice ZM4821",
+        "email_body": "<p>Attached.</p>",
+        "reply_to": "billing@yourdomain.com",
+        "user_reference_id": "inv-4821",
+        "callback_url": "https://example.com/webhooks/unicom360/email",
+        "source": "shop"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/bulk/email",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "from": "noreply@yourdomain.com",
+          "to": [
+            "jane@example.com"
+          ],
+          "subject": "Invoice ZM4821",
+          "email_body": "<p>Attached.</p>",
+          "reply_to": "billing@yourdomain.com",
+          "user_reference_id": "inv-4821",
+          "callback_url": "https://example.com/webhooks/unicom360/email",
+          "source": "shop"
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "template-docs-example",
+      "description": "The docs example: a media header, a body list and a dynamic URL button.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "order_ready",
+        "from": "260960123456",
+        "language": "en_US",
+        "callback_url": "https://example.com/webhooks/unicom360/whatsapp",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "inv-42",
+            "header": {
+              "type": "image",
+              "url": "https://example.com/receipts/ZM-4821.png"
+            },
+            "body": [
+              "Ada",
+              "ZM-4821"
+            ],
+            "buttons": [
+              {
+                "index": 0,
+                "type": "url",
+                "value": "ZM-4821"
+              }
+            ]
+          },
+          {
+            "to": "12",
+            "user_reference_id": "inv-43",
+            "body": [
+              "Joseph",
+              "ZM-4822"
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "order_ready",
+          "from": "260960123456",
+          "language": "en_US",
+          "callback_url": "https://example.com/webhooks/unicom360/whatsapp",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "user_reference_id": "inv-42",
+              "header": {
+                "type": "image",
+                "url": "https://example.com/receipts/ZM-4821.png"
+              },
+              "body": [
+                "Ada",
+                "ZM-4821"
+              ],
+              "buttons": [
+                {
+                  "index": 0,
+                  "type": "url",
+                  "value": "ZM-4821"
+                }
+              ]
+            },
+            {
+              "to": "12",
+              "user_reference_id": "inv-43",
+              "body": [
+                "Joseph",
+                "ZM-4822"
+              ]
+            }
+          ]
+        },
+        "absent_keys": [
+          "/recipients/0/otp",
+          "/recipients/1/header",
+          "/recipients/1/buttons",
+          "/recipients/1/otp"
+        ]
+      }
+    },
+    {
+      "id": "template-minimal",
+      "description": "Only the required fields.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "hello_world",
+        "recipients": [
+          {
+            "to": "260971234567"
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "hello_world",
+          "recipients": [
+            {
+              "to": "260971234567"
+            }
+          ]
+        },
+        "absent_keys": [
+          "/from",
+          "/language",
+          "/callback_url",
+          "/recipients/0/user_reference_id",
+          "/recipients/0/header",
+          "/recipients/0/body",
+          "/recipients/0/buttons",
+          "/recipients/0/otp"
+        ]
+      }
+    },
+    {
+      "id": "template-text-header-and-body-map",
+      "description": "A text header is a plain string; body is an object keyed by variable name.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "appointment_reminder",
+        "language": "en",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "appt-9",
+            "header": "Ada",
+            "body": {
+              "name": "Ada",
+              "time": "10:30"
+            }
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "appointment_reminder",
+          "language": "en",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "user_reference_id": "appt-9",
+              "header": "Ada",
+              "body": {
+                "name": "Ada",
+                "time": "10:30"
+              }
+            }
+          ]
+        },
+        "absent_keys": [
+          "/from",
+          "/callback_url",
+          "/recipients/0/buttons",
+          "/recipients/0/otp"
+        ]
+      }
+    },
+    {
+      "id": "template-document-header-with-filename",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "invoice_ready",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "header": {
+              "type": "document",
+              "url": "https://example.com/invoices/4821.pdf",
+              "filename": "invoice-4821.pdf"
+            },
+            "body": [
+              "ZM-4821"
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "invoice_ready",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "header": {
+                "type": "document",
+                "url": "https://example.com/invoices/4821.pdf",
+                "filename": "invoice-4821.pdf"
+              },
+              "body": [
+                "ZM-4821"
+              ]
+            }
+          ]
+        },
+        "absent_keys": [
+          "/recipients/0/header/caption"
+        ]
+      }
+    },
+    {
+      "id": "template-video-header",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "promo_video",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "header": {
+              "type": "video",
+              "url": "https://example.com/promo.mp4"
+            }
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "promo_video",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "header": {
+                "type": "video",
+                "url": "https://example.com/promo.mp4"
+              }
+            }
+          ]
+        },
+        "absent_keys": [
+          "/recipients/0/header/filename"
+        ]
+      }
+    },
+    {
+      "id": "template-otp",
+      "description": "An AUTHENTICATION template: the code goes in otp.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "login_code",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "login-7781",
+            "otp": "482193"
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "login_code",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "user_reference_id": "login-7781",
+              "otp": "482193"
+            }
+          ]
+        },
+        "absent_keys": [
+          "/recipients/0/body",
+          "/recipients/0/header",
+          "/recipients/0/buttons"
+        ]
+      }
+    },
+    {
+      "id": "template-quick-reply-button-and-many-recipients",
+      "description": "Recipients keep their order and their own parameters.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "feedback_request",
+        "from": "260960123456",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "fb-1",
+            "body": [
+              "Ada"
+            ],
+            "buttons": [
+              {
+                "index": 0,
+                "type": "quick_reply",
+                "value": "rate-5"
+              }
+            ]
+          },
+          {
+            "to": "260961234567",
+            "user_reference_id": "fb-2",
+            "body": [
+              "Joseph"
+            ]
+          },
+          {
+            "to": "260951234567",
+            "user_reference_id": "fb-3",
+            "body": [
+              "Mary"
+            ],
+            "buttons": [
+              {
+                "index": 0,
+                "type": "quick_reply",
+                "value": "rate-4"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/template",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "template": "feedback_request",
+          "from": "260960123456",
+          "recipients": [
+            {
+              "to": "260971234567",
+              "user_reference_id": "fb-1",
+              "body": [
+                "Ada"
+              ],
+              "buttons": [
+                {
+                  "index": 0,
+                  "type": "quick_reply",
+                  "value": "rate-5"
+                }
+              ]
+            },
+            {
+              "to": "260961234567",
+              "user_reference_id": "fb-2",
+              "body": [
+                "Joseph"
+              ]
+            },
+            {
+              "to": "260951234567",
+              "user_reference_id": "fb-3",
+              "body": [
+                "Mary"
+              ],
+              "buttons": [
+                {
+                  "index": 0,
+                  "type": "quick_reply",
+                  "value": "rate-4"
+                }
+              ]
+            }
+          ]
+        },
+        "absent_keys": [
+          "/language",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-text-docs-example",
+      "description": "The docs example: reply_to is the wamid of the customer's message.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "text",
+        "text": "Hi Ada, your order ZM-4821 is ready for collection at the Cairo Road branch.",
+        "from": "260960123456",
+        "reply_to": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==",
+        "user_reference_id": "s-1",
+        "callback_url": "https://example.com/webhooks/unicom360/whatsapp"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "text",
+          "text": "Hi Ada, your order ZM-4821 is ready for collection at the Cairo Road branch.",
+          "from": "260960123456",
+          "reply_to": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==",
+          "user_reference_id": "s-1",
+          "callback_url": "https://example.com/webhooks/unicom360/whatsapp"
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "session-text-minimal",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "text",
+        "text": "Thanks, see you soon."
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "text",
+          "text": "Thanks, see you soon."
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-text-reply-to-message-id",
+      "description": "reply_to also takes a message_id this API returned.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "text",
+        "text": "Following up on this.",
+        "reply_to": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "text",
+          "text": "Following up on this.",
+          "reply_to": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f"
+        },
+        "absent_keys": [
+          "/from",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-image-with-caption",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "image",
+        "media": {
+          "url": "https://example.com/receipts/ZM-4821.png",
+          "caption": "Your receipt"
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "image",
+          "media": {
+            "url": "https://example.com/receipts/ZM-4821.png",
+            "caption": "Your receipt"
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/media/filename"
+        ]
+      }
+    },
+    {
+      "id": "session-video",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "video",
+        "media": {
+          "url": "https://example.com/how-to-collect.mp4"
+        },
+        "user_reference_id": "vid-1"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "video",
+          "media": {
+            "url": "https://example.com/how-to-collect.mp4"
+          },
+          "user_reference_id": "vid-1"
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/callback_url",
+          "/media/caption",
+          "/media/filename"
+        ]
+      }
+    },
+    {
+      "id": "session-document-caption-and-filename",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "document",
+        "media": {
+          "url": "https://example.com/invoice-4821.pdf",
+          "caption": "Invoice ZM-4821",
+          "filename": "invoice-4821.pdf"
+        },
+        "from": "260960123456"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "document",
+          "media": {
+            "url": "https://example.com/invoice-4821.pdf",
+            "caption": "Invoice ZM-4821",
+            "filename": "invoice-4821.pdf"
+          },
+          "from": "260960123456"
+        },
+        "absent_keys": [
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-audio",
+      "description": "audio takes no caption.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "audio",
+        "media": {
+          "url": "https://example.com/voice-note.ogg"
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "audio",
+          "media": {
+            "url": "https://example.com/voice-note.ogg"
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/media/caption"
+        ]
+      }
+    },
+    {
+      "id": "session-sticker",
+      "description": "sticker takes no caption.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "sticker",
+        "media": {
+          "url": "https://example.com/sticker.webp"
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "sticker",
+          "media": {
+            "url": "https://example.com/sticker.webp"
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/media/caption"
+        ]
+      }
+    },
+    {
+      "id": "session-interactive-buttons",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "interactive",
+        "interactive": {
+          "type": "button",
+          "header": "Order ZM-4821",
+          "body": "Collect today or deliver?",
+          "footer": "Reply within 24 hours",
+          "buttons": [
+            {
+              "id": "collect",
+              "title": "Collect"
+            },
+            {
+              "id": "deliver",
+              "title": "Deliver"
+            }
+          ]
+        },
+        "user_reference_id": "btn-1"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "interactive",
+          "interactive": {
+            "type": "button",
+            "header": "Order ZM-4821",
+            "body": "Collect today or deliver?",
+            "footer": "Reply within 24 hours",
+            "buttons": [
+              {
+                "id": "collect",
+                "title": "Collect"
+              },
+              {
+                "id": "deliver",
+                "title": "Deliver"
+              }
+            ]
+          },
+          "user_reference_id": "btn-1"
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-interactive-buttons-minimal",
+      "description": "The docs parameter example.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "interactive",
+        "interactive": {
+          "type": "button",
+          "body": "Collect today or deliver?",
+          "buttons": [
+            {
+              "id": "collect",
+              "title": "Collect"
+            },
+            {
+              "id": "deliver",
+              "title": "Deliver"
+            }
+          ]
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "interactive",
+          "interactive": {
+            "type": "button",
+            "body": "Collect today or deliver?",
+            "buttons": [
+              {
+                "id": "collect",
+                "title": "Collect"
+              },
+              {
+                "id": "deliver",
+                "title": "Deliver"
+              }
+            ]
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/interactive/header",
+          "/interactive/footer"
+        ]
+      }
+    },
+    {
+      "id": "session-interactive-list",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "interactive",
+        "interactive": {
+          "type": "list",
+          "body": "Choose a delivery slot",
+          "button": "Pick a slot",
+          "sections": [
+            {
+              "title": "Today",
+              "rows": [
+                {
+                  "id": "today-am",
+                  "title": "Morning",
+                  "description": "08:00 to 12:00"
+                },
+                {
+                  "id": "today-pm",
+                  "title": "Afternoon"
+                }
+              ]
+            },
+            {
+              "title": "Tomorrow",
+              "rows": [
+                {
+                  "id": "tomorrow-am",
+                  "title": "Morning",
+                  "description": "08:00 to 12:00"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "interactive",
+          "interactive": {
+            "type": "list",
+            "body": "Choose a delivery slot",
+            "button": "Pick a slot",
+            "sections": [
+              {
+                "title": "Today",
+                "rows": [
+                  {
+                    "id": "today-am",
+                    "title": "Morning",
+                    "description": "08:00 to 12:00"
+                  },
+                  {
+                    "id": "today-pm",
+                    "title": "Afternoon"
+                  }
+                ]
+              },
+              {
+                "title": "Tomorrow",
+                "rows": [
+                  {
+                    "id": "tomorrow-am",
+                    "title": "Morning",
+                    "description": "08:00 to 12:00"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/interactive/header",
+          "/interactive/footer",
+          "/interactive/sections/0/rows/1/description"
+        ]
+      }
+    },
+    {
+      "id": "session-location",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "location",
+        "location": {
+          "latitude": -15.4167,
+          "longitude": 28.2833,
+          "name": "Cairo Road branch",
+          "address": "Cairo Road, Lusaka"
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "location",
+          "location": {
+            "latitude": -15.4167,
+            "longitude": 28.2833,
+            "name": "Cairo Road branch",
+            "address": "Cairo Road, Lusaka"
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-location-coordinates-only",
+      "description": "Zero and boundary coordinates are sent as numbers.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "location",
+        "location": {
+          "latitude": 0,
+          "longitude": -180
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "location",
+          "location": {
+            "latitude": 0,
+            "longitude": -180
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url",
+          "/location/name",
+          "/location/address"
+        ]
+      }
+    },
+    {
+      "id": "session-contacts",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "contacts",
+        "contacts": [
+          {
+            "name": {
+              "formatted_name": "Unicom360 Support",
+              "first_name": "Unicom360",
+              "last_name": "Support"
+            },
+            "phones": [
+              {
+                "phone": "+260960123456",
+                "type": "WORK",
+                "wa_id": "260960123456"
+              }
+            ],
+            "emails": [
+              {
+                "email": "info@techrode.co",
+                "type": "WORK"
+              }
+            ],
+            "urls": [
+              {
+                "url": "https://unicom360.com",
+                "type": "WORK"
+              }
+            ],
+            "org": {
+              "company": "Techrode Solutions Limited"
+            }
+          },
+          {
+            "name": {
+              "formatted_name": "Sales"
+            },
+            "phones": [
+              {
+                "phone": "+260970000000"
+              }
+            ]
+          }
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "contacts",
+          "contacts": [
+            {
+              "name": {
+                "formatted_name": "Unicom360 Support",
+                "first_name": "Unicom360",
+                "last_name": "Support"
+              },
+              "phones": [
+                {
+                  "phone": "+260960123456",
+                  "type": "WORK",
+                  "wa_id": "260960123456"
+                }
+              ],
+              "emails": [
+                {
+                  "email": "info@techrode.co",
+                  "type": "WORK"
+                }
+              ],
+              "urls": [
+                {
+                  "url": "https://unicom360.com",
+                  "type": "WORK"
+                }
+              ],
+              "org": {
+                "company": "Techrode Solutions Limited"
+              }
+            },
+            {
+              "name": {
+                "formatted_name": "Sales"
+              },
+              "phones": [
+                {
+                  "phone": "+260970000000"
+                }
+              ]
+            }
+          ]
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-reaction",
+      "description": "A reaction to the customer's message (by wamid). reply_to is never sent on a reaction.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "reaction",
+        "reaction": {
+          "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==",
+          "emoji": "👍"
+        }
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "reaction",
+          "reaction": {
+            "message_id": "wamid.HBgMMjYwOTcxMjM0NTY3FQIAEhggQTVCMEM3Qjc5OUZCOEU5NEM3REMxMjI5NzJBODJEQTVEAA==",
+            "emoji": "👍"
+          }
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/user_reference_id",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "session-reaction-remove",
+      "description": "An empty emoji removes a reaction and is sent as an empty string, not omitted.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "reaction",
+        "reaction": {
+          "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "emoji": ""
+        },
+        "user_reference_id": "react-2"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/session",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "to": "260971234567",
+          "type": "reaction",
+          "reaction": {
+            "message_id": "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+            "emoji": ""
+          },
+          "user_reference_id": "react-2"
+        },
+        "absent_keys": [
+          "/from",
+          "/reply_to",
+          "/callback_url"
+        ]
+      }
+    },
+    {
+      "id": "status-three-ids",
+      "description": "The docs example.",
+      "operation": "whatsapp.status",
+      "params": {
+        "message_ids": [
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60",
+          "00000000-0000-4000-8000-000000000000"
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/status",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "message_ids": [
+            "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+            "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60",
+            "00000000-0000-4000-8000-000000000000"
+          ]
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "status-repeated-id-sent-as-given",
+      "description": "The SDK does not de-duplicate; the server answers a repeated id once.",
+      "operation": "whatsapp.status",
+      "params": {
+        "message_ids": [
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60"
+        ]
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/whatsapp/status",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "message_ids": [
+            "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+            "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f",
+            "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60"
+          ]
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "templates-list",
+      "description": "A GET without a body.",
+      "operation": "whatsapp.templates",
+      "params": {},
+      "expect": {
+        "method": "GET",
+        "path": "/api/v1/json/whatsapp/templates",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>"
+        },
+        "absent_headers": [
+          "authorization",
+          "content-type"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": null,
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "balance-default",
+      "description": "No bundle_type: the body is an empty object.",
+      "operation": "balance.get",
+      "params": {},
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/balance",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {},
+        "absent_keys": [
+          "/bundle_type",
+          "/username",
+          "/password"
+        ]
+      }
+    },
+    {
+      "id": "balance-whatsapp",
+      "operation": "balance.get",
+      "params": {
+        "bundle_type": "WHATSAPP"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/balance",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "bundle_type": "WHATSAPP"
+        },
+        "absent_keys": [
+          "/username",
+          "/password"
+        ]
+      }
+    },
+    {
+      "id": "balance-sms-international",
+      "operation": "balance.get",
+      "params": {
+        "bundle_type": "SMS_INTERNATIONAL"
+      },
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/balance",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {
+          "bundle_type": "SMS_INTERNATIONAL"
+        },
+        "absent_keys": []
+      }
+    },
+    {
+      "id": "balance-all",
+      "description": "An empty JSON object body.",
+      "operation": "balance.all",
+      "params": {},
+      "expect": {
+        "method": "POST",
+        "path": "/api/v1/json/balance/all",
+        "headers": {
+          "accept": "application/json",
+          "x-api-key": "<KEY>",
+          "content-type": "application/json"
+        },
+        "absent_headers": [
+          "authorization"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": {},
+        "absent_keys": [
+          "/username",
+          "/password"
+        ]
+      }
+    },
+    {
+      "id": "health",
+      "description": "No API key, no body.",
+      "operation": "health",
+      "params": {},
+      "expect": {
+        "method": "GET",
+        "path": "/health",
+        "headers": {
+          "accept": "application/json"
+        },
+        "absent_headers": [
+          "authorization",
+          "x-api-key",
+          "content-type"
+        ],
+        "user_agent_prefix": "unicom360-",
+        "json": null,
+        "absent_keys": []
+      }
+    }
+  ]
+}

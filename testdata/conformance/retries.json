@@ -1,0 +1,1719 @@
+{
+  "version": "0.1.0",
+  "description": "Response and transport sequences, and the attempts and sleeps each must produce. See conformance/README.md.",
+  "vectors": [
+    {
+      "id": "429-then-success",
+      "description": "429 is always retried, after the next UTC minute plus up to 1 s of jitter.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 30,
+            "max": 31
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "429-near-end-of-minute-waits-at-least-1s",
+      "description": "0.5 s before the minute turns, the wait is still at least 1 s.",
+      "operation": "balance.get",
+      "params": {},
+      "now_unix": 1767225659.5,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":1250,\"bundle_type\":\"SMS\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 1,
+            "max": 1.5
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "429-on-the-minute-waits-a-full-minute",
+      "description": "At 0 s into a minute the window has just started: wait 60 s plus jitter.",
+      "operation": "whatsapp.status",
+      "params": {
+        "message_ids": [
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f"
+        ]
+      },
+      "now_unix": 1767225600,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"results\":[{\"billable\":true,\"category\":\"UTILITY\",\"delivered_at\":\"2026-10-24T08:16:02Z\",\"error\":null,\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"read_at\":\"2026-10-24T08:20:45Z\",\"refunded\":false,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"READ\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"billable\":true,\"category\":\"MARKETING\",\"delivered_at\":null,\"error\":{\"code\":131026,\"message\":\"Message undeliverable\"},\"from\":\"260960123456\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e60\",\"read_at\":null,\"refunded\":true,\"sent_at\":\"2026-10-24T08:15:31Z\",\"status\":\"FAILED\",\"to\":\"260961234567\",\"user_reference_id\":null},{\"message_id\":\"00000000-0000-4000-8000-000000000000\",\"status\":\"NOT_FOUND\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 60,
+            "max": 61
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "429-exhausts-retries",
+      "description": "Three 429s with max_retries 2: the third is raised. The clock moves with each sleep.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 3,
+        "sleeps": [
+          {
+            "min": 30,
+            "max": 31
+          },
+          {
+            "min": 59,
+            "max": 61
+          }
+        ],
+        "outcome": {
+          "kind": "error",
+          "type": "rate_limit_error",
+          "class": "RateLimitError",
+          "code": "RATE_LIMIT_EXCEEDED",
+          "http_status": 429
+        }
+      }
+    },
+    {
+      "id": "429-wait-over-max-retry-wait-gives-up",
+      "description": "30 s to the next minute is more than max_retry_wait 10: raise at once, without sleeping.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 10
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "rate_limit_error",
+          "class": "RateLimitError",
+          "code": "RATE_LIMIT_EXCEEDED",
+          "http_status": 429
+        }
+      }
+    },
+    {
+      "id": "429-max-retries-zero",
+      "description": "max_retries 0 disables every retry.",
+      "operation": "balance.get",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 0,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "rate_limit_error",
+          "class": "RateLimitError",
+          "code": "RATE_LIMIT_EXCEEDED",
+          "http_status": 429
+        }
+      }
+    },
+    {
+      "id": "connect-refused-send-without-reference-retried",
+      "description": "Nothing reached the server: always retried, even a send without a reference.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "connect_refused"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "dns-failure-exhausts-retries",
+      "description": "Pre-send failures every time: the last is raised as APIConnectionError.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "dns_failure"
+        },
+        {
+          "transport": "dns_failure"
+        },
+        {
+          "transport": "dns_failure"
+        }
+      ],
+      "expect": {
+        "attempts": 3,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          },
+          {
+            "min": 0,
+            "max": 2
+          }
+        ],
+        "outcome": {
+          "kind": "error",
+          "type": "connection_error",
+          "class": "APIConnectionError",
+          "code": null,
+          "http_status": null
+        }
+      }
+    },
+    {
+      "id": "timeout-after-send-sms-without-reference-not-retried",
+      "description": "The request may have been processed: a send without a reference is not retried.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "timeout_after_send"
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "timeout_error",
+          "class": "APITimeoutError",
+          "code": null,
+          "http_status": null
+        }
+      }
+    },
+    {
+      "id": "timeout-after-send-sms-with-reference-retried",
+      "description": "With user_reference_id the server de-duplicates, so the send is retried.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready.",
+        "user_reference_id": "order-10421"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "timeout_after_send"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "retried-send-that-had-gone-through-reports-duplicate",
+      "description": "The first attempt reached the server before timing out; the retry is refused as a duplicate. attempts is 2, which tells the caller the first attempt probably succeeded.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready.",
+        "user_reference_id": "order-10421"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "timeout_after_send"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"duplicate user reference id\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "error",
+          "type": "api_error",
+          "class": "DuplicateReferenceError",
+          "code": "DUPLICATE_REFERENCE",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "id": "reset-after-send-email-without-reference-not-retried",
+      "description": "Connection reset after sending: not retried without a reference.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "reset_after_send"
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "connection_error",
+          "class": "APIConnectionError",
+          "code": null,
+          "http_status": null
+        }
+      }
+    },
+    {
+      "id": "reset-after-send-email-with-reference-not-retried",
+      "description": "email.send is never retry-safe: its reference check has no unique index, so even with user_reference_id a failure after sending is not retried.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks.",
+        "user_reference_id": "inv-4821"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "reset_after_send"
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "connection_error",
+          "class": "APIConnectionError",
+          "code": null,
+          "http_status": null
+        }
+      }
+    },
+    {
+      "id": "timeout-after-send-email-with-reference-not-retried",
+      "description": "A timeout after sending is not retried on email, reference or not: the first attempt may still be running.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks.",
+        "user_reference_id": "inv-4821"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "timeout_after_send"
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "timeout_error",
+          "class": "APITimeoutError",
+          "code": null,
+          "http_status": null
+        }
+      }
+    },
+    {
+      "id": "500-email-with-reference-not-retried",
+      "description": "A 5xx on email is not retried, reference or not.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks.",
+        "user_reference_id": "inv-4821"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "http_status": 500
+        }
+      }
+    },
+    {
+      "id": "429-email-with-reference-retried",
+      "description": "A 429 never reached processing, so email is retried after it like any call.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks.",
+        "user_reference_id": "inv-4821"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"48213\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"},{\"message_id\":\"48214\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"john@example.com\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 30,
+            "max": 31
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "connect-refused-email-with-reference-retried",
+      "description": "Nothing was sent, so email is retried after a refused connection like any call.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks.",
+        "user_reference_id": "inv-4821"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "connect_refused"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"48213\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"},{\"message_id\":\"48214\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"john@example.com\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "500-sms-without-reference-not-retried",
+      "description": "A 5xx on a send without a reference is raised at once.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "http_status": 500
+        }
+      }
+    },
+    {
+      "id": "502-html-sms-with-reference-retried",
+      "description": "A 5xx on a send with a reference is retried.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready.",
+        "user_reference_id": "order-10421"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 502,
+            "headers": {
+              "content-type": "text/html"
+            },
+            "body_text": "<html><body>Bad Gateway</body></html>"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"dff31690-b450-4000-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260971234567\"},{\"message_id\":\"dff31690-b450-4001-a6b7-141d8523ef10\",\"status\":\"ACKNOWLEDGED\",\"mobile_number\":\"260961234567\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "503-balance-retried",
+      "description": "Read operations are always retried on 5xx.",
+      "operation": "balance.get",
+      "params": {
+        "bundle_type": "WHATSAPP"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 503,
+            "headers": {
+              "content-type": "text/html"
+            },
+            "body_text": "<html><body>Service Unavailable</body></html>"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"status\":true,\"message\":\"Balance retrieved successfully\",\"balance\":1250,\"bundle_type\":\"SMS\",\"client_id\":\"UC-00042\",\"client_name\":\"Acme Ltd\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "500-balance-all-exhausts-retries",
+      "description": "Full-jitter backoff: random(0, min(8, 0.5 * 2^n)) after failed attempt n.",
+      "operation": "balance.all",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 3,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          },
+          {
+            "min": 0,
+            "max": 2
+          }
+        ],
+        "outcome": {
+          "kind": "error",
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "http_status": 500
+        }
+      }
+    },
+    {
+      "id": "500-five-retries-backoff-cap",
+      "description": "With max_retries 5 the backoff cap grows to 8 s and stays there.",
+      "operation": "whatsapp.templates",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 5,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"templates\":[{\"authentication\":null,\"body\":{\"text\":\"Hi {{1}}, your order {{2}} is ready for collection.\",\"variables\":[\"1\",\"2\"]},\"buttons\":[{\"index\":0,\"text\":\"Track order\",\"type\":\"url\",\"url\":\"https://example.com/orders/{{1}}\"}],\"category\":\"UTILITY\",\"footer\":\"Reply STOP to opt out\",\"from\":\"260960123456\",\"header\":{\"type\":\"image\",\"variables\":[]},\"language\":\"en_US\",\"name\":\"order_ready\"},{\"authentication\":{\"code_expiration_minutes\":10,\"otp_type\":\"COPY_CODE\"},\"body\":{\"text\":\"{{1}} is your verification code.\",\"variables\":[]},\"buttons\":[{\"index\":0,\"otp_type\":\"COPY_CODE\",\"type\":\"otp\"}],\"category\":\"AUTHENTICATION\",\"footer\":null,\"from\":\"260960123456\",\"header\":null,\"language\":\"en\",\"name\":\"login_code\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 6,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          },
+          {
+            "min": 0,
+            "max": 2
+          },
+          {
+            "min": 0,
+            "max": 4
+          },
+          {
+            "min": 0,
+            "max": 8
+          },
+          {
+            "min": 0,
+            "max": 8
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "timeout-after-send-templates-retried",
+      "description": "A read operation is retried after a timeout.",
+      "operation": "whatsapp.templates",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "timeout_after_send"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"templates\":[{\"authentication\":null,\"body\":{\"text\":\"Hi {{1}}, your order {{2}} is ready for collection.\",\"variables\":[\"1\",\"2\"]},\"buttons\":[{\"index\":0,\"text\":\"Track order\",\"type\":\"url\",\"url\":\"https://example.com/orders/{{1}}\"}],\"category\":\"UTILITY\",\"footer\":\"Reply STOP to opt out\",\"from\":\"260960123456\",\"header\":{\"type\":\"image\",\"variables\":[]},\"language\":\"en_US\",\"name\":\"order_ready\"},{\"authentication\":{\"code_expiration_minutes\":10,\"otp_type\":\"COPY_CODE\"},\"body\":{\"text\":\"{{1}} is your verification code.\",\"variables\":[]},\"buttons\":[{\"index\":0,\"otp_type\":\"COPY_CODE\",\"type\":\"otp\"}],\"category\":\"AUTHENTICATION\",\"footer\":null,\"from\":\"260960123456\",\"header\":null,\"language\":\"en\",\"name\":\"login_code\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "reset-after-send-health-retried",
+      "description": "health is a read operation.",
+      "operation": "health",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "reset_after_send"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"status\":\"ok\",\"timestamp\":\"2026-10-22T08:15:30.412Z\",\"version\":\"0.1.0\",\"environment\":\"production\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "send-failed-session-without-reference-not-retried",
+      "description": "SEND_FAILED is retried only when the send is de-duplicated.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "text",
+        "text": "Your order is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"SEND_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_error",
+          "class": "APIError",
+          "code": "SEND_FAILED",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "id": "send-failed-session-with-reference-retried",
+      "description": "SEND_FAILED with a reference is retried.",
+      "operation": "whatsapp.send_session",
+      "params": {
+        "to": "260971234567",
+        "type": "text",
+        "text": "Your order is ready.",
+        "user_reference_id": "s-1"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"SEND_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"category\":\"SERVICE\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"s-1\"},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "send-failed-template-every-recipient-referenced-retried",
+      "description": "A template send is retry-safe only when every recipient has a user_reference_id.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "order_ready",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "inv-42",
+            "body": [
+              "Ada",
+              "ZM-4821"
+            ]
+          },
+          {
+            "to": "260961234567",
+            "user_reference_id": "inv-43",
+            "body": [
+              "Joseph",
+              "ZM-4822"
+            ]
+          }
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"SEND_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":\"12\",\"user_reference_id\":\"inv-43\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "500-template-every-recipient-referenced-retried",
+      "description": "5xx on a fully referenced template send is retried.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "order_ready",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "inv-42",
+            "body": [
+              "Ada",
+              "ZM-4821"
+            ]
+          },
+          {
+            "to": "260961234567",
+            "user_reference_id": "inv-43",
+            "body": [
+              "Joseph",
+              "ZM-4822"
+            ]
+          }
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":\"12\",\"user_reference_id\":\"inv-43\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 3,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          },
+          {
+            "min": 0,
+            "max": 2
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "500-template-one-recipient-unreferenced-not-retried",
+      "description": "One recipient without a reference makes the whole send unsafe to retry.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "order_ready",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "inv-42",
+            "body": [
+              "Ada",
+              "ZM-4821"
+            ]
+          },
+          {
+            "to": "260961234567",
+            "body": [
+              "Joseph",
+              "ZM-4822"
+            ]
+          }
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "http_status": 500
+        }
+      }
+    },
+    {
+      "id": "connect-refused-template-unreferenced-retried",
+      "description": "Pre-send failures are retried whatever the references.",
+      "operation": "whatsapp.send_template",
+      "params": {
+        "template": "order_ready",
+        "recipients": [
+          {
+            "to": "260971234567",
+            "user_reference_id": "inv-42",
+            "body": [
+              "Ada",
+              "ZM-4821"
+            ]
+          },
+          {
+            "to": "260961234567",
+            "body": [
+              "Joseph",
+              "ZM-4822"
+            ]
+          }
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "connect_refused"
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":{\"accepted\":1,\"rejected\":1,\"results\":[{\"category\":\"UTILITY\",\"message_id\":\"7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f\",\"reason\":null,\"status\":\"ACKNOWLEDGED\",\"to\":\"260971234567\",\"user_reference_id\":\"inv-42\"},{\"category\":\"UTILITY\",\"message_id\":null,\"reason\":\"INVALID_NUMBER\",\"status\":\"REJECTED\",\"to\":\"12\",\"user_reference_id\":\"inv-43\"}]},\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "400-never-retried",
+      "description": "400 is never retried.",
+      "operation": "whatsapp.status",
+      "params": {
+        "message_ids": [
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f"
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 400,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"message_ids must hold between 1 and 100 entries\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "invalid_request_error",
+          "class": "InvalidRequestError",
+          "code": "UNKNOWN",
+          "http_status": 400
+        }
+      }
+    },
+    {
+      "id": "401-never-retried",
+      "description": "401 is never retried, even on a read operation.",
+      "operation": "whatsapp.status",
+      "params": {
+        "message_ids": [
+          "7c1f3a2e-5b64-4d2f-9a8e-0f1b2c3d4e5f"
+        ]
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 401,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"AUTHENTICATION_FAILED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "authentication_error",
+          "class": "AuthenticationError",
+          "code": "AUTHENTICATION_FAILED",
+          "http_status": 401
+        }
+      }
+    },
+    {
+      "id": "404-never-retried",
+      "description": "Other 4xx are never retried.",
+      "operation": "health",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 404,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Not Found\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "http_status": 404
+        }
+      }
+    },
+    {
+      "id": "business-error-with-reference-never-retried",
+      "description": "A success:false other than SEND_FAILED is final, reference or not.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready.",
+        "user_reference_id": "order-10421"
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"INSUFFICIENT_BUNDLE\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_error",
+          "class": "InsufficientBundleError",
+          "code": "INSUFFICIENT_BUNDLE",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "id": "balance-status-false-never-retried",
+      "description": "status:false on a balance endpoint is final.",
+      "operation": "balance.get",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"status\":false,\"message\":\"CLIENT_NOT_FOUND\"}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_error",
+          "class": "APIError",
+          "code": "CLIENT_NOT_FOUND",
+          "http_status": 200
+        }
+      }
+    },
+    {
+      "id": "429-then-500-send-without-reference",
+      "description": "Each attempt is judged on its own: the 429 is retried, the 500 that follows is not.",
+      "operation": "sms.send",
+      "params": {
+        "from": "Unicom360",
+        "to": "260971234567",
+        "message": "Your order ZM4821 is ready."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 500,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"errors\":{\"detail\":\"Internal Server Error\"}}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 2,
+        "sleeps": [
+          {
+            "min": 30,
+            "max": 31
+          }
+        ],
+        "outcome": {
+          "kind": "error",
+          "type": "api_server_error",
+          "class": "APIServerError",
+          "code": "UNKNOWN",
+          "http_status": 500
+        }
+      }
+    },
+    {
+      "id": "connect-refused-then-429-then-success",
+      "description": "Mixed causes share one retry budget.",
+      "operation": "email.send",
+      "params": {
+        "from": "noreply@yourdomain.com",
+        "to": "jane@example.com",
+        "subject": "Order confirmed",
+        "email_body": "Thanks."
+      },
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "transport": "connect_refused"
+        },
+        {
+          "http": {
+            "status": 429,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"message\":\"RATE_LIMIT_EXCEEDED\",\"success\":false,\"api_reference\":\"1764184470578998353\"}"
+          }
+        },
+        {
+          "http": {
+            "status": 200,
+            "headers": {
+              "content-type": "application/json; charset=utf-8"
+            },
+            "body_text": "{\"api_reference\":\"1764184470578998353\",\"data\":[{\"message_id\":\"48213\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"jane@example.com\"},{\"message_id\":\"48214\",\"status\":\"ACKNOWLEDGED\",\"email_address\":\"john@example.com\"}],\"message\":\"successful\",\"success\":true}"
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 3,
+        "sleeps": [
+          {
+            "min": 0,
+            "max": 1
+          },
+          {
+            "min": 29,
+            "max": 31
+          }
+        ],
+        "outcome": {
+          "kind": "result"
+        }
+      }
+    },
+    {
+      "id": "empty-200-never-retried",
+      "description": "A 2xx without a JSON object is not retried.",
+      "operation": "balance.get",
+      "params": {},
+      "now_unix": 1767225630,
+      "config": {
+        "max_retries": 2,
+        "max_retry_wait": 60
+      },
+      "steps": [
+        {
+          "http": {
+            "status": 200,
+            "headers": {},
+            "body_text": ""
+          }
+        }
+      ],
+      "expect": {
+        "attempts": 1,
+        "sleeps": [],
+        "outcome": {
+          "kind": "error",
+          "type": "api_status_error",
+          "class": "APIStatusError",
+          "code": "UNKNOWN",
+          "http_status": 200
+        }
+      }
+    }
+  ]
+}

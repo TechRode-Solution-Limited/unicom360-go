@@ -1,0 +1,681 @@
+{
+  "version": "0.1.0",
+  "description": "Raw server messages and the normalised code for each. See conformance/README.md for the algorithm.",
+  "vectors": [
+    {
+      "id": "ec-001",
+      "message": "Invalid From Sender ID",
+      "code": "INVALID_SENDER_ID",
+      "source": "sms"
+    },
+    {
+      "id": "ec-002",
+      "message": "From Sender ID not allowed",
+      "code": "SENDER_ID_NOT_ALLOWED",
+      "source": "sms"
+    },
+    {
+      "id": "ec-003",
+      "message": "Recipient list size is invalid",
+      "code": "INVALID_RECIPIENT_LIMIT",
+      "source": "sms"
+    },
+    {
+      "id": "ec-004",
+      "message": "INSUFFICIENT_BUNDLE",
+      "code": "INSUFFICIENT_BUNDLE",
+      "source": "sms"
+    },
+    {
+      "id": "ec-005",
+      "message": "INSUFFICIENT_BUNDLE: no international SMS bundle",
+      "code": "INSUFFICIENT_BUNDLE",
+      "source": "sms"
+    },
+    {
+      "id": "ec-006",
+      "message": "duplicate user reference id",
+      "code": "DUPLICATE_REFERENCE",
+      "source": "sms, email"
+    },
+    {
+      "id": "ec-007",
+      "message": "Invalid parameters provided",
+      "code": "INVALID_PARAMETERS",
+      "source": "sms, email"
+    },
+    {
+      "id": "ec-008",
+      "message": "Invalid Sender",
+      "code": "INVALID_SENDER_ID",
+      "source": "email"
+    },
+    {
+      "id": "ec-009",
+      "message": "Sender not allowed",
+      "code": "SENDER_ID_NOT_ALLOWED",
+      "source": "email"
+    },
+    {
+      "id": "ec-010",
+      "message": "Invalid Recipient Limit",
+      "code": "INVALID_RECIPIENT_LIMIT",
+      "source": "email"
+    },
+    {
+      "id": "ec-011",
+      "message": "Insufficient bundle",
+      "code": "INSUFFICIENT_BUNDLE",
+      "source": "email"
+    },
+    {
+      "id": "ec-012",
+      "message": "INVALID_SENDER_ID",
+      "code": "INVALID_SENDER_ID",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-013",
+      "message": "SENDER_ID_NOT_ALLOWED",
+      "code": "SENDER_ID_NOT_ALLOWED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-014",
+      "message": "SENDER_REQUIRED",
+      "code": "SENDER_REQUIRED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-015",
+      "message": "TEMPLATE_NOT_FOUND",
+      "code": "TEMPLATE_NOT_FOUND",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-016",
+      "message": "TEMPLATE_NOT_APPROVED",
+      "code": "TEMPLATE_NOT_APPROVED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-017",
+      "message": "LANGUAGE_REQUIRED",
+      "code": "LANGUAGE_REQUIRED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-018",
+      "message": "TEMPLATE_SENDER_MISMATCH",
+      "code": "TEMPLATE_SENDER_MISMATCH",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-019",
+      "message": "INSUFFICIENT_BUNDLE_LIMIT",
+      "code": "INSUFFICIENT_BUNDLE",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-020",
+      "message": "NO_VALID_RECIPIENTS",
+      "code": "NO_VALID_RECIPIENTS",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-021",
+      "message": "SEND_FAILED",
+      "code": "SEND_FAILED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-022",
+      "message": "SESSION_WINDOW_CLOSED",
+      "code": "SESSION_WINDOW_CLOSED",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-023",
+      "message": "REPLY_TO_NOT_FOUND",
+      "code": "REPLY_TO_NOT_FOUND",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-024",
+      "message": "REACTION_TARGET_NOT_FOUND",
+      "code": "REACTION_TARGET_NOT_FOUND",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-025",
+      "message": "DUPLICATE_MSG_REF",
+      "code": "DUPLICATE_REFERENCE",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-026",
+      "message": "INVALID_NUMBER",
+      "code": "INVALID_NUMBER",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-027",
+      "message": "INVALID_USER_REFERENCE_ID",
+      "code": "INVALID_USER_REFERENCE_ID",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-028",
+      "message": "MEDIA_URL_INVALID",
+      "code": "MEDIA_URL_INVALID",
+      "source": "whatsapp"
+    },
+    {
+      "id": "ec-029",
+      "message": "BODY_PARAMETERS_INVALID",
+      "code": "BODY_PARAMETERS_INVALID",
+      "source": "whatsapp (reason)"
+    },
+    {
+      "id": "ec-030",
+      "message": "HEADER_PARAMETER_INVALID",
+      "code": "HEADER_PARAMETER_INVALID",
+      "source": "whatsapp (reason)"
+    },
+    {
+      "id": "ec-031",
+      "message": "BUTTON_PARAMETERS_INVALID",
+      "code": "BUTTON_PARAMETERS_INVALID",
+      "source": "whatsapp (reason)"
+    },
+    {
+      "id": "ec-032",
+      "message": "OTP_REQUIRED",
+      "code": "OTP_REQUIRED",
+      "source": "whatsapp (reason)"
+    },
+    {
+      "id": "ec-033",
+      "message": "OTP_INVALID",
+      "code": "OTP_INVALID",
+      "source": "whatsapp (reason)"
+    },
+    {
+      "id": "ec-034",
+      "message": "CLIENT_NOT_FOUND",
+      "code": "CLIENT_NOT_FOUND",
+      "source": "balance, auth"
+    },
+    {
+      "id": "ec-035",
+      "message": "Missing API key. Provide X-API-Key header or Authorization: Bearer <api_key>",
+      "code": "MISSING_API_KEY",
+      "source": "auth"
+    },
+    {
+      "id": "ec-036",
+      "message": "Invalid authorization format. Use 'Bearer <api_key>' or 'Basic <base64>'",
+      "code": "INVALID_AUTHORIZATION",
+      "source": "auth"
+    },
+    {
+      "id": "ec-037",
+      "message": "Invalid Basic auth format. Use api_key as username",
+      "code": "INVALID_AUTHORIZATION",
+      "source": "auth"
+    },
+    {
+      "id": "ec-038",
+      "message": "Invalid Base64 encoding in Basic auth",
+      "code": "INVALID_AUTHORIZATION",
+      "source": "auth"
+    },
+    {
+      "id": "ec-039",
+      "message": "AUTHENTICATION_FAILED",
+      "code": "AUTHENTICATION_FAILED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-040",
+      "message": "CREDENTIAL_DISABLED",
+      "code": "CREDENTIAL_DISABLED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-041",
+      "message": "CLIENT_DISABLED",
+      "code": "CLIENT_DISABLED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-042",
+      "message": "CREDENTIAL_EXPIRED",
+      "code": "CREDENTIAL_EXPIRED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-043",
+      "message": "IP_NOT_ALLOWED",
+      "code": "IP_NOT_ALLOWED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-044",
+      "message": "RATE_LIMIT_EXCEEDED",
+      "code": "RATE_LIMIT_EXCEEDED",
+      "source": "auth"
+    },
+    {
+      "id": "ec-045",
+      "message": "Missing required keys: [\"message\"]",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-046",
+      "message": "Missing required keys: [\"from\", \"message\"]",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-047",
+      "message": "Expected STRING, got INTEGER 260971234567, at to -> index 0",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-048",
+      "message": "recipients must be a list",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-049",
+      "message": "recipients must hold between 1 and 1000 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-050",
+      "message": "template is required",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-051",
+      "message": "from must be a string",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-052",
+      "message": "language must be a string",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-053",
+      "message": "callback_url must be an https URL of at most 300 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-054",
+      "message": "to is required",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-055",
+      "message": "type must be one of text, image, document, audio, video, sticker, interactive, location, contacts, reaction",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-056",
+      "message": "text is required for a text message",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-057",
+      "message": "text must hold 1 to 4096 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-058",
+      "message": "media.url is required when type is image",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-059",
+      "message": "media.caption is not allowed on audio",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-060",
+      "message": "media.caption must be a string",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-061",
+      "message": "media.caption must hold at most 1024 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-062",
+      "message": "media.filename must be a string",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-063",
+      "message": "reply_to must be a string",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-064",
+      "message": "reply_to is not allowed on a reaction",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-065",
+      "message": "interactive is required when type is interactive",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-066",
+      "message": "interactive.type must be button or list",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-067",
+      "message": "interactive.body must hold 1 to 1024 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-068",
+      "message": "interactive.header must hold at most 60 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-069",
+      "message": "interactive.buttons must hold between 1 and 3 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-070",
+      "message": "interactive.buttons entries must be objects",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-071",
+      "message": "interactive.buttons[].id must hold 1 to 256 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-072",
+      "message": "interactive.buttons[].title must hold 1 to 20 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-073",
+      "message": "interactive.buttons ids must be unique",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-074",
+      "message": "interactive.buttons titles must be unique",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-075",
+      "message": "interactive.button must hold 1 to 20 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-076",
+      "message": "interactive.sections must hold between 1 and 10 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-077",
+      "message": "interactive.sections[].title must hold 1 to 24 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-078",
+      "message": "interactive.sections[].rows must hold between 1 and 10 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-079",
+      "message": "interactive.sections[].rows[].title must hold 1 to 24 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-080",
+      "message": "interactive.sections[].rows[].description must hold at most 72 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-081",
+      "message": "interactive.sections must hold at most 10 rows in total",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-082",
+      "message": "interactive.sections[].rows ids must be unique",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-083",
+      "message": "location is required when type is location",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-084",
+      "message": "location.latitude must be a number between -90 and 90",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-085",
+      "message": "location.longitude must be a number between -180 and 180",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-086",
+      "message": "location.name must hold at most 1000 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-087",
+      "message": "contacts must be a list",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-088",
+      "message": "contacts must hold between 1 and 10 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-089",
+      "message": "contacts entries must be objects",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-090",
+      "message": "contacts[].name.formatted_name is required",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-091",
+      "message": "contacts[].name.formatted_name must hold 1 to 1000 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-092",
+      "message": "contacts[].phones must hold at least one phone",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-093",
+      "message": "reaction is required when type is reaction",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-094",
+      "message": "reaction.message_id must hold 1 to 1000 characters",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-095",
+      "message": "reaction.emoji must be a single emoji, or empty to remove a reaction",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-096",
+      "message": "message_ids must be a list",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-097",
+      "message": "message_ids must hold between 1 and 100 entries",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-098",
+      "message": "message_ids must be strings",
+      "code": "UNKNOWN",
+      "source": "request shape (400)"
+    },
+    {
+      "id": "ec-099",
+      "message": "Bad Request",
+      "code": "UNKNOWN",
+      "source": "phoenix errors.detail"
+    },
+    {
+      "id": "ec-100",
+      "message": "Not Found",
+      "code": "UNKNOWN",
+      "source": "phoenix errors.detail"
+    },
+    {
+      "id": "ec-101",
+      "message": "Not Acceptable",
+      "code": "UNKNOWN",
+      "source": "phoenix errors.detail"
+    },
+    {
+      "id": "ec-102",
+      "message": "Internal Server Error",
+      "code": "UNKNOWN",
+      "source": "phoenix errors.detail"
+    },
+    {
+      "id": "ec-103",
+      "message": "SOME_FUTURE_CODE",
+      "code": "SOME_FUTURE_CODE",
+      "source": "synthetic",
+      "note": "An unknown UPPER_SNAKE code passes through unchanged."
+    },
+    {
+      "id": "ec-104",
+      "message": "INSUFFICIENT_BUNDLE: no WhatsApp bundle",
+      "code": "INSUFFICIENT_BUNDLE",
+      "source": "synthetic",
+      "note": "A CODE: detail message takes the code before the colon."
+    },
+    {
+      "id": "ec-105",
+      "message": "DUPLICATE_MSG_REF: inv-42",
+      "code": "DUPLICATE_REFERENCE",
+      "source": "synthetic",
+      "note": "The prefix is normalised through the alias table too."
+    },
+    {
+      "id": "ec-106",
+      "message": "NEW_CODE: with detail",
+      "code": "NEW_CODE",
+      "source": "synthetic",
+      "note": "An unknown prefix code passes through."
+    },
+    {
+      "id": "ec-107",
+      "message": "Something went wrong",
+      "code": "UNKNOWN",
+      "source": "synthetic",
+      "note": "Any other sentence is UNKNOWN."
+    },
+    {
+      "id": "ec-108",
+      "message": "",
+      "code": "UNKNOWN",
+      "source": "synthetic",
+      "note": "An empty message is UNKNOWN."
+    },
+    {
+      "id": "ec-109",
+      "message": "insufficient_bundle",
+      "code": "UNKNOWN",
+      "source": "synthetic",
+      "note": "Matching is case-sensitive: lower case is not a code."
+    },
+    {
+      "id": "ec-110",
+      "message": " INSUFFICIENT_BUNDLE",
+      "code": "UNKNOWN",
+      "source": "synthetic",
+      "note": "No trimming: a leading space makes it a sentence."
+    },
+    {
+      "id": "ec-111",
+      "message": "Duplicate User Reference Id",
+      "code": "UNKNOWN",
+      "source": "synthetic",
+      "note": "Sentence matching is exact and case-sensitive."
+    }
+  ]
+}

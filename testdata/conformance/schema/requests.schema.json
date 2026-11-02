@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/requests.schema.json",
+  "title": "requests.json: each SDK call and the exact HTTP request it must make",
+  "type": "object",
+  "required": ["version", "description", "canned_responses", "vectors"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "description": { "type": "string" },
+    "canned_responses": {
+      "description": "A response the harness's fake transport can answer each operation with, so the call completes.",
+      "type": "object",
+      "propertyNames": { "$ref": "common.schema.json#/$defs/operation" },
+      "additionalProperties": { "$ref": "common.schema.json#/$defs/http" }
+    },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "operation", "params", "expect"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "description": { "type": "string" },
+          "operation": { "$ref": "common.schema.json#/$defs/operation" },
+          "params": {
+            "description": "The call's arguments in API field names (snake_case).",
+            "type": "object"
+          },
+          "expect": {
+            "type": "object",
+            "required": ["method", "path", "headers", "absent_headers", "user_agent_prefix", "json", "absent_keys"],
+            "additionalProperties": false,
+            "properties": {
+              "method": { "enum": ["GET", "POST"] },
+              "path": { "type": "string", "pattern": "^/" },
+              "headers": {
+                "description": "Lower-case names; values compared exactly, with <KEY> standing for the harness's API key.",
+                "type": "object",
+                "propertyNames": { "pattern": "^[a-z0-9-]+$" },
+                "additionalProperties": { "type": "string" }
+              },
+              "absent_headers": {
+                "type": "array",
+                "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+                "uniqueItems": true
+              },
+              "user_agent_prefix": { "type": "string", "minLength": 1 },
+              "json": {
+                "description": "The exact JSON body, or null for a request without a body.",
+                "type": ["object", "null"]
+              },
+              "absent_keys": {
+                "description": "JSON Pointers (RFC 6901) that must not exist in the body.",
+                "type": "array",
+                "items": { "type": "string", "pattern": "^(/[^/]*)+$" },
+                "uniqueItems": true
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

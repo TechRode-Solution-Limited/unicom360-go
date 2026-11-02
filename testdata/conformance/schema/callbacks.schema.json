@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/callbacks.schema.json",
+  "title": "callbacks.json: the unsigned SMS and email delivery reports and their parsed form",
+  "type": "object",
+  "required": ["version", "description", "vectors"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "description": { "type": "string" },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "kind", "body_text", "expect"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "description": { "type": "string" },
+          "kind": { "enum": ["sms", "email"] },
+          "off_spec": { "type": "boolean" },
+          "body_text": { "type": "string" },
+          "expect": {
+            "oneOf": [
+              {
+                "type": "object",
+                "required": ["result"],
+                "additionalProperties": false,
+                "properties": { "result": { "type": "object" } }
+              },
+              {
+                "type": "object",
+                "required": ["error"],
+                "additionalProperties": false,
+                "properties": { "error": { "const": true } }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

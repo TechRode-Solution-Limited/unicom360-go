@@ -1,0 +1,572 @@
+{
+  "version": "0.1.0",
+  "description": "GSM-7 checks, character counts and billing units, from the gateway's sms_part_counter 0.1.7 set. See conformance/README.md.",
+  "charset": "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà^{}\\[~]|€",
+  "max_length": 1200,
+  "unit_length": 160,
+  "vectors": [
+    {
+      "id": "empty",
+      "description": "Empty text is GSM-7, length 0, billed as 1 unit, and invalid (empty).",
+      "text": "",
+      "is_gsm7": true,
+      "length": 0,
+      "units": 1,
+      "non_gsm": [],
+      "validate": [
+        "empty"
+      ]
+    },
+    {
+      "id": "hello",
+      "text": "Hello",
+      "is_gsm7": true,
+      "length": 5,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "160-chars",
+      "description": "Exactly one unit.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 160,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "161-chars",
+      "description": "Two units: billing is max(1, ceil(length / 160)), not GSM segments of 153.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 161,
+      "units": 2,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "320-chars",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 320,
+      "units": 2,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "321-chars",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 321,
+      "units": 3,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "1200-chars",
+      "description": "The longest valid message: 8 units.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 1200,
+      "units": 8,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "1201-chars",
+      "description": "Too long.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 1201,
+      "units": 8,
+      "non_gsm": [],
+      "validate": [
+        "too_long"
+      ]
+    },
+    {
+      "id": "1281-chars",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "is_gsm7": true,
+      "length": 1281,
+      "units": 9,
+      "non_gsm": [],
+      "validate": [
+        "too_long"
+      ]
+    },
+    {
+      "id": "extension-euro",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "€",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-lbrace",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "{",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-rbrace",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "}",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-lbracket",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "[",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-rbracket",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "]",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-tilde",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "~",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-backslash",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "\\",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-caret",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "^",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "extension-pipe",
+      "description": "A GSM extension character counts as one character (the gateway bills characters, not septets).",
+      "text": "|",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "160-euro-signs",
+      "description": "160 extension characters are still one unit.",
+      "text": "€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€€",
+      "is_gsm7": true,
+      "length": 160,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "crlf-only",
+      "description": "CR LF is one character. Whitespace only, so invalid (empty).",
+      "text": "\r\n",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": [
+        "empty"
+      ]
+    },
+    {
+      "id": "crlf-in-text",
+      "text": "Hi\r\nthere",
+      "is_gsm7": true,
+      "length": 8,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "lf-cr-is-two",
+      "description": "LF followed by CR is two characters.",
+      "text": "Hi\n\rthere",
+      "is_gsm7": true,
+      "length": 9,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "crlf-at-160-boundary",
+      "description": "161 code points but 160 characters: one unit.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\r\n",
+      "is_gsm7": true,
+      "length": 160,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "lfcr-at-160-boundary",
+      "description": "161 characters: two units.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n\r",
+      "is_gsm7": true,
+      "length": 161,
+      "units": 2,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "crlf-keeps-1600-code-points-valid",
+      "description": "1,600 code points but 1,200 characters: valid, 8 units.",
+      "text": "ab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\nab\r\n",
+      "is_gsm7": true,
+      "length": 1200,
+      "units": 8,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "cr-alone",
+      "text": "\r",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": [
+        "empty"
+      ]
+    },
+    {
+      "id": "lf-alone",
+      "text": "\n",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": [
+        "empty"
+      ]
+    },
+    {
+      "id": "spaces-only",
+      "description": "Whitespace only: invalid (empty).",
+      "text": "   ",
+      "is_gsm7": true,
+      "length": 3,
+      "units": 1,
+      "non_gsm": [],
+      "validate": [
+        "empty"
+      ]
+    },
+    {
+      "id": "form-feed",
+      "description": "Form feed is not in the gateway's set (no GSM extension escape).",
+      "text": "\f",
+      "is_gsm7": false,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "\f",
+          "index": 0
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "form-feed-in-text",
+      "text": "Page 1\fPage 2",
+      "is_gsm7": false,
+      "length": 13,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "\f",
+          "index": 6
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "tab",
+      "description": "Tab is not GSM-7.",
+      "text": "a\tb",
+      "is_gsm7": false,
+      "length": 3,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "\t",
+          "index": 1
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "smart-quotes",
+      "description": "Typographic apostrophe and quotes are not GSM-7.",
+      "text": "It’s “done”",
+      "is_gsm7": false,
+      "length": 11,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "’",
+          "index": 2
+        },
+        {
+          "char": "“",
+          "index": 5
+        },
+        {
+          "char": "”",
+          "index": 10
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "c-cedilla-lower",
+      "description": "Lower-case c cedilla is not in the set.",
+      "text": "ç",
+      "is_gsm7": false,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "ç",
+          "index": 0
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "c-cedilla-upper",
+      "description": "Upper-case C cedilla is.",
+      "text": "Ç",
+      "is_gsm7": true,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "backtick",
+      "description": "The backtick is not GSM-7.",
+      "text": "`",
+      "is_gsm7": false,
+      "length": 1,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "`",
+          "index": 0
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "emoji",
+      "description": "An emoji is one character and not GSM-7 (two UTF-16 units, one code point).",
+      "text": "Thanks 😀",
+      "is_gsm7": false,
+      "length": 8,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "😀",
+          "index": 7
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "emoji-index-after-crlf",
+      "description": "non_gsm indexes count code points; CR LF counts as two there.",
+      "text": "😀\r\nx😀",
+      "is_gsm7": false,
+      "length": 4,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "😀",
+          "index": 0
+        },
+        {
+          "char": "😀",
+          "index": 4
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "accented-gsm",
+      "description": "These accented letters are in the set.",
+      "text": "ñäöüà",
+      "is_gsm7": true,
+      "length": 5,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "accented-non-gsm",
+      "description": "u with circumflex is not.",
+      "text": "Ca coûte 5€",
+      "is_gsm7": false,
+      "length": 11,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "û",
+          "index": 5
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "greek-capitals",
+      "text": "ΔΦΓΛΩΠΨΣΘΞ",
+      "is_gsm7": true,
+      "length": 10,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "greek-lowercase-not-gsm",
+      "description": "Only the GSM Greek capitals are in the set.",
+      "text": "αβ",
+      "is_gsm7": false,
+      "length": 2,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "α",
+          "index": 0
+        },
+        {
+          "char": "β",
+          "index": 1
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "whole-charset",
+      "description": "Every character of the gateway's set.",
+      "text": "@£$¥èéùìòÇ\nØø\rÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-./0123456789:;<=>?¡ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÑÜ§¿abcdefghijklmnopqrstuvwxyzäöñüà^{}\\[~]|€",
+      "is_gsm7": true,
+      "length": 136,
+      "units": 1,
+      "non_gsm": [],
+      "validate": []
+    },
+    {
+      "id": "nbsp",
+      "description": "A no-break space is not GSM-7.",
+      "text": "a b",
+      "is_gsm7": false,
+      "length": 3,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": " ",
+          "index": 1
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "too-long-and-non-gsm",
+      "description": "Several problems are all reported, in the order empty, too_long, non_gsm.",
+      "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaç",
+      "is_gsm7": false,
+      "length": 1201,
+      "units": 8,
+      "non_gsm": [
+        {
+          "char": "ç",
+          "index": 1200
+        }
+      ],
+      "validate": [
+        "too_long",
+        "non_gsm"
+      ]
+    },
+    {
+      "id": "whitespace-only-with-form-feed",
+      "description": "Only space, tab, CR and LF count as blank; the form feed makes this non_gsm, not empty.",
+      "text": " \f ",
+      "is_gsm7": false,
+      "length": 3,
+      "units": 1,
+      "non_gsm": [
+        {
+          "char": "\f",
+          "index": 1
+        }
+      ],
+      "validate": [
+        "non_gsm"
+      ]
+    }
+  ]
+}

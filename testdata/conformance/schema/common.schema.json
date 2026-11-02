@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/common.schema.json",
+  "title": "Shared definitions for the Unicom360 conformance fixtures",
+  "$defs": {
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "operation": {
+      "enum": [
+        "sms.send",
+        "email.send",
+        "whatsapp.send_template",
+        "whatsapp.send_session",
+        "whatsapp.status",
+        "whatsapp.templates",
+        "balance.get",
+        "balance.all",
+        "health"
+      ]
+    },
+    "headers": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "http": {
+      "type": "object",
+      "required": ["status", "headers", "body_text"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+        "headers": { "$ref": "#/$defs/headers" },
+        "body_text": { "type": "string" }
+      }
+    },
+    "error_type": {
+      "enum": [
+        "configuration_error",
+        "connection_error",
+        "timeout_error",
+        "authentication_error",
+        "rate_limit_error",
+        "invalid_request_error",
+        "api_server_error",
+        "api_status_error",
+        "api_error",
+        "signature_verification_error"
+      ]
+    },
+    "error_class": {
+      "enum": [
+        "Unicom360Error",
+        "ConfigurationError",
+        "APIConnectionError",
+        "APITimeoutError",
+        "APIStatusError",
+        "AuthenticationError",
+        "RateLimitError",
+        "InvalidRequestError",
+        "APIServerError",
+        "APIError",
+        "InsufficientBundleError",
+        "DuplicateReferenceError",
+        "NoValidRecipientsError",
+        "SessionWindowClosedError",
+        "SignatureVerificationError"
+      ]
+    },
+    "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]*$" },
+    "unix_time": { "type": "number", "minimum": 0 }
+  }
+}

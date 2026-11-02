@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://unicom360.com/conformance/schema/error-codes.schema.json",
+  "title": "error-codes.json: raw server messages and the normalised code for each",
+  "type": "object",
+  "required": ["version", "description", "vectors"],
+  "additionalProperties": false,
+  "properties": {
+    "version": { "$ref": "common.schema.json#/$defs/version" },
+    "description": { "type": "string" },
+    "vectors": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "message", "code", "source"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "$ref": "common.schema.json#/$defs/id" },
+          "message": { "type": "string" },
+          "code": { "$ref": "common.schema.json#/$defs/code" },
+          "source": { "type": "string", "description": "Where the gateway produces the message (documentation only)." },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

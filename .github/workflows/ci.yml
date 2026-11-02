@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: gofmt, vet, staticcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: gofmt
+        run: |
+          unformatted="$(gofmt -l .)"
+          if [ -n "$unformatted" ]; then
+            echo "Run gofmt -w on:" >&2
+            echo "$unformatted" >&2
+            exit 1
+          fi
+
+      - name: go vet
+        run: |
+          go vet ./...
+          go vet -tags contract ./...
+
+      - name: staticcheck
+        # staticcheck 2026.2.2; it needs a recent Go, which go-version: stable provides.
+        run: |
+          go run honnef.co/go/tools/cmd/staticcheck@v0.8.2 ./...
+          go run honnef.co/go/tools/cmd/staticcheck@v0.8.2 -tags contract ./...
+
+  test:
+    name: test (Go ${{ matrix.go }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The go.mod minimum, and the two supported releases.
+        go: ["1.22", oldstable, stable]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Build, examples included
+        run: go build ./...
+
+      - name: Test (conformance suite, unit tests, examples)
+        env:
+          # Fail, never skip, if the vendored fixtures are missing.
+          UNICOM360_REQUIRE_FIXTURES: "1"
+        run: go test -race -count=1 ./...
+
+  contract:
+    name: contract test against Prism
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check out the API contract
+        uses: actions/checkout@v4
+        with:
+          repository: TechRode-Solution-Limited/unicom360-openapi
+          ref: v0.1.0
+          path: unicom360-openapi
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+
+      - name: Start Prism
+        run: |
+          docker run -d --name prism -p 4010:4010 \
+            -v "$GITHUB_WORKSPACE/unicom360-openapi:/spec:ro" \
+            stoplight/prism:5 mock -h 0.0.0.0 --multiprocess=false /spec/openapi.yaml
+          for _ in $(seq 1 60); do
+            if curl -sf -o /dev/null http://127.0.0.1:4010/health; then exit 0; fi
+            sleep 1
+          done
+          docker logs prism
+          exit 1
+
+      - name: Contract test
+        env:
+          UNICOM360_CONTRACT_BASE_URL: http://127.0.0.1:4010
+        run: go test -tags contract -run Contract -count=1 -v ./...
+
+      - name: Prism log
+        if: failure()
+        run: docker logs prism
+
+  em-dash:
+    name: no em dash
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          if grep -rn --exclude-dir=.git $'\xe2\x80\x94' . ; then
+            echo "Em dash characters found above: rewrite those sentences." >&2
+            exit 1
+          fi
+
+  actionlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: actionlint
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:1.7.7 -color
