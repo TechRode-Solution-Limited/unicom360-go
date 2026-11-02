@@ -65,6 +65,70 @@ func TestSignAndVerify(t *testing.T) {
 	}
 }
 
+var blankSecrets = []string{"", " ", "   ", "\t", "\r\n", " \t\r\n "}
+
+// wantConfigurationError fails unless err is a configuration error, and never a failed
+// verification with a reason.
+func wantConfigurationError(t *testing.T, err error) {
+	t.Helper()
+	var e *unicom360.Error
+	if !errors.As(err, &e) || !errors.Is(err, unicom360.ErrConfiguration) ||
+		errors.Is(err, unicom360.ErrSignatureVerification) || e.Reason != "" {
+		t.Fatalf("got %#v, want a configuration error", err)
+	}
+}
+
+// Anyone can compute a signature with an empty key, so it must never verify.
+func TestBlankSecretRefusesARequestSignedWithThatKey(t *testing.T) {
+	now := time.Now().Unix()
+	for _, blank := range blankSecrets {
+		h := http.Header{}
+		h.Set(webhook.HeaderTimestamp, strconv.FormatInt(now, 10))
+		h.Set(webhook.HeaderSignature, webhook.Sign([]byte(body), blank, now))
+		wantConfigurationError(t, webhook.Verify([]byte(body), h, blank))
+		ev, err := webhook.ConstructEvent([]byte(body), h, blank)
+		if ev != nil {
+			t.Fatalf("secret %q: got an event %#v", blank, ev)
+		}
+		wantConfigurationError(t, err)
+	}
+}
+
+func TestBlankSecretIsRefusedBeforeAnyHeaderCheck(t *testing.T) {
+	for _, blank := range blankSecrets {
+		wantConfigurationError(t, webhook.Verify([]byte(body), http.Header{}, blank))
+		_, err := webhook.ConstructEvent([]byte(body), http.Header{}, blank)
+		wantConfigurationError(t, err)
+	}
+}
+
+func TestHandlerRefusesABlankSecretWhenBuilt(t *testing.T) {
+	for _, blank := range blankSecrets {
+		func() {
+			defer func() {
+				err, _ := recover().(error)
+				wantConfigurationError(t, err)
+			}()
+			webhook.Handler(blank, func(context.Context, webhook.Event) error { return nil })
+		}()
+	}
+}
+
+func TestSecretIsUsedExactlyAsGiven(t *testing.T) {
+	now := time.Now().Unix()
+	padded := " " + secret + "\n"
+	h := http.Header{}
+	h.Set(webhook.HeaderTimestamp, strconv.FormatInt(now, 10))
+	h.Set(webhook.HeaderSignature, webhook.Sign([]byte(body), padded, now))
+	if err := webhook.Verify([]byte(body), h, padded); err != nil {
+		t.Fatalf("Verify: %v", err)
+	}
+	var e *unicom360.Error
+	if err := webhook.Verify([]byte(body), h, secret); !errors.As(err, &e) || e.Reason != webhook.ReasonSignatureMismatch {
+		t.Fatalf("a trimmed secret: got %v", err)
+	}
+}
+
 func TestConstructEventInvalidPayload(t *testing.T) {
 	ts := time.Now().Unix()
 	for _, payload := range []string{`[1]`, `{"event": 7}`, `not json`, `{}`} {

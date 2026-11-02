@@ -290,6 +290,12 @@ Outside `net/http`, pass the raw body to `webhook.ConstructEvent(body, headers, 
 `webhook.Verify(body, headers, secret)` yourself, before any JSON parsing. The key is the
 secret's own bytes, never base64-decoded. `webhook.WithTolerance(d)` changes the allowed skew.
 
+An empty or whitespace-only secret (an unset environment variable, say) is refused, because
+anyone can forge a signature with an empty key: `webhook.Handler` panics when it is built, so the
+server does not start, and `Verify` and `ConstructEvent` return an error matching
+`unicom360.ErrConfiguration` before any other check. That is a fault in your configuration, not a
+failed verification: answer 500, not 401.
+
 Facts worth knowing: a media caption arrives in `Data.Text`, not `Data.Media`; `Data.Payload`
 is set only for location, contacts, reaction, sticker and unsupported messages; a reply-button
 or list tap has the chosen title in `Data.Text` and `Data.ReplyTo` set to your message's

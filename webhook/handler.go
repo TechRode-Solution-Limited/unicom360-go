@@ -21,6 +21,11 @@ const MaxBodyBytes = 1 << 20
 // event, 405 for a method other than POST and 413 for a body over 1 MiB. Deliveries are
 // retried, so make handle idempotent: de-duplicate by ev.Meta().DeliveryID.
 //
+// Handler panics with an *unicom360.Error of type configuration_error when secret is empty or
+// only whitespace, like http.Handle with a bad pattern: a server with an unset secret must not
+// start, because anyone could forge a delivery to an empty key, and every delivery would
+// otherwise fail unnoticed.
+//
 //	http.Handle("POST /webhooks/unicom360", webhook.Handler(secret,
 //		func(ctx context.Context, ev webhook.Event) error {
 //			switch e := ev.(type) {
@@ -30,6 +35,9 @@ const MaxBodyBytes = 1 << 20
 //			return nil
 //		}))
 func Handler(secret string, handle func(context.Context, Event) error, opts ...Option) http.Handler {
+	if err := checkSecret(secret); err != nil {
+		panic(err)
+	}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.Header().Set("Allow", http.MethodPost)

@@ -29,6 +29,9 @@ First release, targeting the Unicom360 API contract v0.1.0.
   before sending are always retried, and sends are retried after a timeout or a 5xx only when
   they carry a `user_reference_id` (email never).
 - Package `webhook`: `Verify`, `ConstructEvent`, `Handler` (an `http.Handler`), `Sign`, and
-  `ParseSMSCallback` / `ParseEmailCallback` for the unsigned delivery reports.
+  `ParseSMSCallback` / `ParseEmailCallback` for the unsigned delivery reports. An empty or
+  whitespace-only secret is refused, because anyone can forge a signature with an empty key:
+  `Verify` and `ConstructEvent` return `ErrConfiguration` before any other check, and `Handler`
+  panics when it is built.
 - Package `gsm`: `IsGSM7`, `Length`, `Units`, `NonGSMCharacters`, `ValidateSMS`.
 - The conformance suite of `unicom360-openapi` v0.1.0, run on every vector.

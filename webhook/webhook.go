@@ -14,6 +14,10 @@
 // more than 5 minutes of clock skew, and compares in constant time. ConstructEvent verifies
 // and parses; Handler does both behind an http.Handler.
 //
+// An empty or whitespace-only secret is refused as a configuration error before anything else
+// is checked, because anyone can forge a signature with an empty key. Otherwise the secret is
+// used exactly as given, never trimmed.
+//
 // Deliveries are retried (30s, 2m, 10m, 30m, 1h, 3h, 6h, 12h) on any non-2xx answer, so answer
 // 2xx quickly and de-duplicate by the delivery id.
 //
@@ -103,8 +107,13 @@ var (
 //
 // It returns nil when the delivery is authentic, else an *unicom360.Error of type
 // signature_verification_error (errors.Is(err, unicom360.ErrSignatureVerification)) whose
-// Reason is one of the Reason* constants.
+// Reason is one of the Reason* constants. An empty or whitespace-only secret is instead, before
+// any other check, a configuration_error (errors.Is(err, unicom360.ErrConfiguration)): a fault
+// in your configuration, not a failed verification.
 func Verify(body []byte, headers http.Header, secret string, opts ...Option) error {
+	if err := checkSecret(secret); err != nil {
+		return err
+	}
 	o := resolve(opts)
 	signature := header(headers, HeaderSignature)
 	if signature == "" {
@@ -148,6 +157,18 @@ func Sign(body []byte, secret string, timestamp int64) string {
 	mac.Write([]byte{'.'})
 	mac.Write(body)
 	return "sha256=" + hex.EncodeToString(mac.Sum(nil))
+}
+
+// checkSecret refuses a secret that is empty or only whitespace. HMAC accepts an empty key and
+// anyone can compute with it, so an unset environment variable must not reach the check.
+func checkSecret(secret string) error {
+	if strings.TrimSpace(secret) != "" {
+		return nil
+	}
+	return &unicom360.Error{
+		Type:    unicom360.TypeConfigurationError,
+		Message: "the webhook secret is empty or only whitespace: set it to the secret from the portal",
+	}
 }
 
 var reasonMessages = map[string]string{

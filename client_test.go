@@ -575,6 +575,9 @@ func TestLogging(t *testing.T) {
 	if retry["level"] != "INFO" || retry["attempt"] != float64(1) || retry["wait_s"] == nil || retry["cause"] != "rate_limit_error (HTTP 429)" {
 		t.Errorf("retry line %v", retry)
 	}
+	if retry["method"] != nil || retry["path"] != nil {
+		t.Errorf("retry line has more than attempt, wait_s and cause: %v", retry)
+	}
 	if second["status"] != float64(200) || second["api_reference"] != "r-1" || second["attempt"] != float64(2) {
 		t.Errorf("second attempt line %v", second)
 	}

@@ -132,10 +132,11 @@ type TestEventData struct {
 	Raw     json.RawMessage `json:"-"`
 }
 
-// ConstructEvent verifies a delivery (see Verify) and parses it into an Event. A verification
-// failure is a signature_verification_error; a body that is not a JSON object with a string
-// "event" is an *unicom360.Error of type unicom360_error. An unknown event type is not an
-// error: it parses as *UnknownEvent.
+// ConstructEvent verifies a delivery (see Verify) and parses it into an Event. An empty or
+// whitespace-only secret is a configuration_error; a verification failure is a
+// signature_verification_error; a body that is not a JSON object with a string "event" is an
+// *unicom360.Error of type unicom360_error. An unknown event type is not an error: it parses as
+// *UnknownEvent.
 func ConstructEvent(body []byte, headers http.Header, secret string, opts ...Option) (Event, error) {
 	if err := Verify(body, headers, secret, opts...); err != nil {
 		return nil, err

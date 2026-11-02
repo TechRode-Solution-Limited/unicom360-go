@@ -92,8 +92,6 @@ func (k *core) do(ctx context.Context, op *operation, opts []RequestOption) ([]b
 		}
 		if k.cfg.logger != nil {
 			k.cfg.logger.LogAttrs(ctx, slog.LevelInfo, "unicom360 retry scheduled",
-				slog.String("method", op.method),
-				slog.String("path", op.path),
 				slog.Int("attempt", attempt),
 				slog.Float64("wait_s", wait),
 				slog.String("cause", retryCause(e)),
