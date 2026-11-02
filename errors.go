@@ -111,7 +111,10 @@ type Error struct {
 	// Results is set on a NoValidRecipientsError: each recipient's result and reason
 	// (data.results).
 	Results []TemplateResult
-	// Err is the underlying cause, for connection and timeout errors. Unwrap returns it.
+	// Err is the underlying cause: the transport error of a connection or timeout error, or
+	// the context's error when ctx ended (also while waiting to retry, in which case the
+	// error is the last attempt's and errors.Is(err, context.Canceled) holds too). Unwrap
+	// returns it.
 	Err error
 }
 
